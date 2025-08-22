@@ -1,0 +1,151 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+}
+
+h1 {
+    font-weight: 700;
+}
+
+.estimate-label {
+    visibility: hidden;
+}
+
+header {
+    top: 0;
+    transition: top 0.3s;
+    z-index: 1030;
+}
+
+.readonly-number {
+  background-color: transparent;
+  border: none;
+  color: #333;
+  font-weight: bold;
+  pointer-events: none;
+
+  /* Bootstrap-like padding + extra right padding to offset spinner space */
+  padding: 0.375rem 1.5rem !important; /* increased right padding */
+  border-radius: 0.375rem !important;
+  box-sizing: border-box !important;
+}
+
+/* Chrome, Edge, Opera */
+.readonly-number::-webkit-outer-spin-button,
+.readonly-number::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+#bpaWrapper {
+    padding: 0;
+    margin: 0;
+}
+
+@media print {
+
+    .btn,
+    .d-print-none {
+        display: none !important;
+    }
+
+    body {
+        width: 210mm;
+        height: 297mm;
+        margin: 10mm;
+        background-color: white;
+        color: black;
+    }
+
+    div {
+        page-break-inside: avoid;
+    }
+
+    fieldset {
+        page-break-inside: avoid;
+    }
+
+    .container {
+        max-width: 100%;
+    }
+
+    .readonly-number {
+    background-color: transparent !important;
+    border: none !important;
+    color: #333 !important;
+    font-weight: bold !important;
+    pointer-events: none !important;
+
+    padding: 0.375rem 1.5rem !important; /* extra right padding */
+    border-radius: 0.375rem !important;
+    box-sizing: border-box !important;
+    }
+
+    .readonly-number::-webkit-inner-spin-button,
+    .readonly-number::-webkit-outer-spin-button {
+    display: none !important;
+    -webkit-appearance: none !important;
+    margin: 0 !important;
+    }
+
+    .col-md-1 {
+        flex: 0 0 10% !important;
+        max-width: 10% !important;
+    }
+
+    .col-md-2 {
+        flex: 0 0 20% !important;
+        max-width: 20% !important;
+    }
+
+    .col-md-3 {
+        flex: 0 0 25.% !important;
+        max-width: 25.% !important;
+    }
+
+    .col-md-4 {
+        flex: 0 0 33.3333% !important;
+        max-width: 33.3333% !important;
+    }
+
+    .col-md-5 {
+        flex: 0 0 40% !important;
+        max-width: 40% !important;
+    }
+
+    .col-md-6 {
+        flex: 0 0 50% !important;
+        max-width: 50% !important;
+    }
+
+    .col-md-7 {
+        flex: 0 0 58.333% !important;
+        max-width: 58.333% !important;
+    }
+
+    .col-md-8 {
+        flex: 0 0 66.666% !important;
+        max-width: 66.666% !important;
+    }
+
+    .col-md-9 {
+        flex: 0 0 75% !important;
+        max-width: 75% !important;
+    }
+
+    .col-md-10 {
+        flex: 0 0 80% !important;
+        max-width: 80% !important;
+    }
+
+    .col-md-11 {
+        flex: 0 0 91.666% !important;
+        max-width: 91.666% !important;
+    }
+
+    .col-md-12 {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+
+}

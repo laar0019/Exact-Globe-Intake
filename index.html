@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/favi/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favi/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favi/favicon-16x16.png">
+  <link rel="manifest" href="/favi/site.webmanifest">
+
+  <title>Exact Globe+ Intake</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="pt-4">
+
+  <main class="container">
+
+    <header class="row sticky-top justify-content-between py-3">
+      <div class="col-md-10">
+        <h1>Exact Globe+ Intake Form</h1>
+      </div>
+      <div class="col-md-2 d-flex justify-content-end align-items-center gap-2 d-print-none">
+        <button type="button" class="btn btn-secondary flex-grow-1" id="refreshBtn">Herstel</button>
+        <button type="button" class="btn btn-primary flex-grow-1" id="printBtn">Print</button>
+      </div>
+    </header>
+
+    <form class="mt-5" id="intakeForm">
+
+      <!-- General Section -->
+      <fieldset id="general" class="row justify-content-start row-gap-2 mb-4">
+        <legend>Algemeen</legend>
+        <hr>
+        <div class="col-md-6">
+          <label for="agentName" class="form-label">Intake afgenomen door:</label>
+          <input type="text" class="form-control" id="agentName" name="agentName">
+        </div>
+        <div class="col-md-6">
+          <label for="companyName" class="form-label">Bedrijfsnaam</label>
+          <input type="text" class="form-control" id="companyName" name="companyName">
+        </div>
+        <div class="col-md-2">
+          <label for="Title" class="form-label">Titel</label>
+          <select class="form-select" id="Title" name="Title">
+            <option value="Dhr">De heer</option>
+            <option value="Mvr">Mevrouw</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label for="contactInitials" class="form-label">Initialen</label>
+          <input type="text" class="form-control" id="contactInitials" name="contactInitials">
+        </div>
+        <div class="col-md-2">
+          <label for="contactMiddleName" class="form-label">Tussenvoegsel</label>
+          <input type="text" class="form-control" id="contactMiddleName" name="contactMiddleName">
+        </div>
+        <div class="col-md-6">
+          <label for="contactLastName" class="form-label">Achternaam</label>
+          <input type="text" class="form-control" id="contactLastName" name="contactLastName">
+        </div>
+        <div class="col-md-6">
+          <label for="emailAddress" class="form-label">Email Address</label>
+          <input type="email" class="form-control" id="emailAddress" name="emailAddress">
+        </div>
+        <div class="col-md-6">
+          <label for="accountCode" class="form-label">Klantnummer Exact</label>
+          <input type="text" class="form-control" id="accountCode" name="accountCode">
+        </div>
+        <div class="col-md-6 d-none">
+          <label for="erpVersion" class="form-label">ERP Version</label>
+          <input type="text" class="form-control" id="erpVersion" name="erpVersion">
+        </div>
+      </fieldset>
+
+      <!-- Planning Section -->
+      <fieldset id="planning" class="row justify-content-start row-gap-2 mb-4">
+        <legend>Planning</legend>
+        <hr>
+        <div class="col-md-6">
+          <label for="profile" class="form-label">Profiel applicatielandschap</label>
+          <select class="form-select" id="profile" name="profile">
+            <option>Light</option>
+            <option>Medium</option>
+            <option>Heavy</option>
+          </select>
+        </div>
+        <div class="col-md-6 invisible">
+          <label for="daysCount" class="form-label">Estimate (days)</label>
+          <input type="number" class="form-control" id="daysCount" name="daysCount" min="1">
+        </div>
+        <div class="col-md-6">
+          <div class="form-check mt-2">
+            <input type="checkbox" class="form-check-input" id="migrationConfirmed" name="migrationConfirmed">
+            <label class="form-check-label" for="migrationConfirmed">Gaat u overstappen?</label>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-check mt-2">
+            <input type="checkbox" class="form-check-input" id="migrationWithCLEAR" name="migrationWithCLEAR">
+            <label class="form-check-label" for="migrationWithCLEAR">Start u een migratietraject met ons?</label>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="goLiveDate" class="form-label">Streefdatum 'Go live'</label>
+          <input type="date" class="form-control" id="goLiveDate" name="goLiveDate">
+        </div>
+        <div class="col-md-6">
+          <label for="implementationDate" class="form-label">Aanvangsdatum migratieproject</label>
+          <input type="date" class="form-control" id="implementationDate" name="implementationDate">
+        </div>
+        <!-- Force next columns to break to new line -->
+        <div class="w-100"></div>
+        <div class="col-md-6">
+          <label for="largeTextFieldPlanning" class="form-label">Opmerkingen:</label>
+          <textarea class="form-control" id="largeTextFieldPlanning" name="largeTextFieldPlanning" rows="6"></textarea>
+        </div>
+      </fieldset>
+
+      <!-- Products Section -->
+      <fieldset class="row justify-content-start row-gap-2 mb-4" id="products">
+        <legend>Products</legend>
+        <hr />
+        <div class="col-md-5">
+          <label class="form-label" for="erp">ERP</label>
+          <select class="form-select" data-target="erpEstimate" id="erp" name="erp">
+            <option data-score="" value="null"></option>
+            <option data-score="" value="NVT">NVT</option>
+            <option data-score="1" value="EBF">Exact Business software for Finance</option>
+            <option data-score="1" value="EBW">Exact Business software for Wholesale</option>
+            <option data-score="1" value="EBM">Exact Business software for Manufacturing</option>
+            <option data-score="1" value="EGF">Exact Globe Next Finance</option>
+            <option data-score="1" value="EGW">Exact Globe Next Wholesale</option>
+            <option data-score="1" value="EGM">Exact Globe Next Manufacturing</option>
+          </select>
+        </div>
+        <div class="col-md-1 estimate">
+          <label class="form-label estimate-label" for="erpEstimate">Dagen</label>
+          <input class="form-control" id="erpEstimate" max="99" maxlength="2" min="0" name="erpEstimate"
+            type="number" />
+        </div>
+        <div class="col-md-5">
+          <label class="form-label" for="sqlRelease">MS SQL Server versie</label>
+          <select class="form-select" data-target="sqlReleaseEstimate" id="sqlRelease" name="sqlRelease">
+            <option data-score="" value="null"></option>
+            <option data-score="0" value="Express">Express</option>
+            <option data-score="0" value="2008">2008</option>
+            <option data-score="0" value="2008R2">2008R2</option>
+            <option data-score="0" value="2012">2012</option>
+            <option data-score="0" value="2014">2014</option>
+            <option data-score="0" value="2016">2016</option>
+            <option data-score="0" value="2017">2017</option>
+            <option data-score="0" value="2019">2019</option>
+            <option data-score="0" value="2022">2022</option>
+          </select>
+        </div>
+        <div class="col-md-1 estimate">
+          <label class="form-label estimate-label" for="sqlReleaseEstimate">Dagen</label>
+          <input class="form-control" id="sqlReleaseEstimate" max="99" maxlength="2" min="0" name="sqlReleaseEstimate"
+            type="number" />
+        </div>
+        <div class="col-md-5">
+          <label class="form-label" for="globeRelease">Globe Release</label>
+          <select class="form-select" data-target="globeReleaseEstimate" id="globeRelease" name="globeRelease">
+            <option data-score="" value="null"></option>
+            <option data-score="" value="NVT">NVT</option>
+            <option data-score="1" value="418 of ouder">418 of ouder</option>
+            <option data-score="1" value="419">419</option>
+            <option data-score="1" value="420">420</option>
+            <option data-score="1" value="421">421</option>
+            <option data-score="1" value="422">422</option>
+            <option data-score="0" value="423">423</option>
+            <option data-score="0" value="424">424</option>
+          </select>
+        </div>
+        <div class="col-md-1 estimate">
+          <label class="form-label estimate-label" for="globeReleaseEstimate">Dagen</label>
+          <input class="form-control" id="globeReleaseEstimate" max="99" maxlength="2" min="0"
+            name="globeReleaseEstimate" type="number" />
+        </div>
+        <div class="col-md-5">
+          <label class="form-label" for="synergyRelease">Synergy Release</label>
+          <select class="form-select" data-target="synergyReleaseEstimate" id="synergyRelease" name="synergyRelease">
+            <option data-score="" value="null"></option>
+            <option data-score="" value="NVT">NVT</option>
+            <option data-score="1" value="263 of ouder">263 of ouder</option>
+            <option data-score="1" value="264">264</option>
+            <option data-score="1" value="265">265</option>
+            <option data-score="1" value="266">266</option>
+            <option data-score="1" value="267">267</option>
+            <option data-score="1" value="500">500</option>
+            <option data-score="1" value="501">501</option>
+            <option data-score="1" value="502">502</option>
+          </select>
+        </div>
+        <div class="col-md-1 estimate">
+          <label class="form-label estimate-label" for="synergyReleaseEstimate">Dagen</label>
+          <input class="form-control" id="synergyReleaseEstimate" max="99" maxlength="2" min="0"
+            name="synergyReleaseEstimate" type="number" />
+        </div>
+        <div id="bpaWrapper" class="row">
+          <div class="col-md-5">
+            <label class="form-label" for="bpaType">BPA Type</label>
+            <select class="form-select" data-target="bpaTypeEstimate" id="bpaType" name="bpaType">
+              <option data-score="" value="null"></option>
+              <option data-score="" value="NVT">NVT</option>
+              <option data-score="0" value="Orbis">Orbis</option>
+              <option data-score="0" value="EEM">Exact Event Manager</option>
+              <option data-score="0" value="GLM">GLM</option>
+              <option data-score="0" value="RPA">RPA</option>
+              <option data-score="0" value="BPA derden">BPA derden</option>
+              <option data-score="1" value="Meerdere BPA">Meerdere BPA</option>
+            </select>
+          </div>
+          <div class="col-md-1 estimate">
+            <label class="form-label estimate-label" for="bpaTypeEstimate">Dagen</label>
+            <input class="form-control" id="bpaTypeEstimate" max="99" maxlength="2" min="0" name="bpaTypeEstimate"
+              type="number" />
+          </div>
+          <div class="col-md-6">
+            <div id="bpaTaskWrapper" class="row invisible">
+              <div class="col-md-10">
+                <label class="form-label" for="taskQuantity">Aantal taken</label>
+                <select class="form-select" data-target="bpaTaskEstimate" id="taskQuantity" name="taskQuantity">
+                  <option data-score="" value="null"></option>
+                  <option data-score="1" value="10">Tot 10</option>
+                  <option data-score="2" value="25">11 tot 25</option>
+                  <option data-score="4" value="50">26 tot 50</option>
+                  <option data-score="5" value=">50">50 of meer</option>
+                </select>
+              </div>
+              <div class="col-md-2 estimate">
+                <label class="form-label estimate-label" for="bpaTaskEstimate">Dagen</label>
+                <input class="form-control" id="bpaTaskEstimate" max="99" maxlength="2" min="0" name="bpaTaskEstimate"
+                  type="number" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-5">
+          <label class="form-label" for="wmsSolution">WMS</label>
+          <select class="form-select" data-target="wmsSolutionEstimate" id="wmsSolution" name="wmsSolution">
+            <option data-score="" value="null"></option>
+            <option data-score="" value="NVT">NVT</option>
+            <option data-score="2" value="Exact WMS">Exact WMS</option>
+            <option data-score="2" value="Boxwise">Boxwise</option>
+            <option data-score="2" value="WMS derden">WMS derden</option>
+            <option data-score="2" value="Bizbloqs">Bizbloqs</option>
+            <option data-score="4" value="Meerdere WMS">Meerdere WMS</option>
+          </select>
+        </div>
+        <div class="col-md-1 estimate">
+          <label class="form-label estimate-label" for="wmsSolutionEstimate">Dagen</label>
+          <input class="form-control" id="wmsSolutionEstimate" max="99" maxlength="2" min="0" name="wmsSolutionEstimate"
+            type="number" />
+        </div>
+        <div class="col-md-5">
+          <label class="form-label" for="hrmSolution">Payroll</label>
+          <select class="form-select" data-target="hrmSolutionEstimate" id="hrmSolution" name="hrmSolution">
+            <option data-score="" value="null"></option>
+            <option data-score="" value="NVT">NVT</option>
+            <option data-score="1" value="Payroll">Payroll</option>
+          </select>
+        </div>
+        <div class="col-md-1 estimate">
+          <label class="form-label estimate-label" for="hrmSolutionEstimate">Dagen</label>
+          <input class="form-control" id="hrmSolutionEstimate" max="99" maxlength="2" min="0" name="hrmSolutionEstimate"
+            type="number" />
+        </div>
+        <div class="col-md-5">
+          <label class="form-label" for="integrationMethod">Wisselt u data uit tussen Synergy en
+            Globe?</label>
+          <select class="form-select" data-target="integrationMethodEstimate" id="integrationMethod"
+            name="integrationMethod">
+            <option data-score="" value="null"></option>
+            <option data-score="0" value="NVT">NVT</option>
+            <option data-score="1" value="Geïntegreerd (.ASP)">Geïntegreerd (.ASP)</option>
+            <option data-score="1" value="XML">XML</option>
+            <option data-score="1" value="CMDM">CMDM</option>
+            <option data-score="1" value="MSI integrator">MSI integrator</option>
+            <option data-score="1" value="ELIS integrator">ELIS integrator</option>
+          </select>
+        </div>
+        <div class="col-md-1 estimate">
+          <label class="form-label estimate-label" for="integrationMethodEstimate">Dagen</label>
+          <input class="form-control" id="integrationMethodEstimate" max="99" maxlength="2" min="0"
+            name="integrationMethodEstimate" type="number" />
+        </div>
+        <div class="col-md-5">
+          <label class="form-label" for="customizationType">Maatwerk</label>
+          <select class="form-select" data-target="customizationTypeEstimate" id="customizationType"
+            name="customizationType">
+            <option data-score="" value="null"></option>
+            <option data-score="" value="NVT">NVT</option>
+            <option data-score="1" value="Maatwerk BrainSys">Maatwerk BrainSys</option>
+            <option data-score="1" value="Maatwerk CLEAR Solutions">Maatwerk CLEAR Solutions</option>
+            <option data-score="1" value="Maatwerk Exact">Maatwerk Exact</option>
+            <option data-score="1" value="Maatwerk derden">Maatwerk derden</option>
+            <option data-score="2" value="Meerdere maatwerk">Meerdere maatwerk</option>
+          </select>
+        </div>
+        <div class="col-md-1 estimate">
+          <label class="form-label estimate-label" for="customizationTypeEstimate">Dagen</label>
+          <input class="form-control" id="customizationTypeEstimate" max="99" maxlength="2" min="0"
+            name="customizationTypeEstimate" type="number" />
+        </div>
+        <div class="col-md-5">
+          <label class="form-label" for="exchangeIntegrationType">Gebruikt u Exact Exchange
+            integratie?</label>
+          <select class="form-select" data-target="exchangeIntegrationTypeEstimate" id="exchangeIntegrationType"
+            name="exchangeIntegrationType">
+            <option data-score="" value="null"></option>
+            <option data-score="0" value="NVT">NVT</option>
+            <option data-score="0" value="Background job">Background job</option>
+            <option data-score="0" value="MSI">MSI</option>
+            <option data-score="0" value="ELIS">ELIS</option>
+          </select>
+        </div>
+        <div class="col-md-1 estimate">
+          <label class="form-label estimate-label" for="exchangeIntegrationTypeEstimate">Dagen</label>
+          <input class="form-control" id="exchangeIntegrationTypeEstimate" max="99" maxlength="2" min="0"
+            name="exchangeIntegrationTypeEstimate" type="number" />
+        </div>
+        <div class="col-md-5">
+          <label class="form-label" for="yesNoChoice">ASImport</label>
+          <select class="form-select" data-target="yesNoChoiceEstimate" id="yesNoChoice" name="yesNoChoice">
+            <option data-score="" value="null"></option>
+            <option data-score="0" value="NVT">NVT</option>
+            <option data-score="1" value="Ja">Ja</option>
+          </select>
+        </div>
+        <div class="col-md-1 estimate">
+          <label class="form-label estimate-label" for="yesNoChoiceEstimate">Dagen</label>
+          <input class="form-control" id="yesNoChoiceEstimate" max="99" maxlength="2" min="0" name="yesNoChoiceEstimate"
+            type="number" />
+        </div>
+        <div class="col-md-5">
+          <label class="form-label" for="webshopLinks">(Webshop-)koppelingen</label>
+          <select class="form-select" data-target="webshopLinksEstimate" id="webshopLinks" name="webshopLinks">
+            <option data-score="" value="null"></option>
+            <option data-score="0" value="NVT">NVT</option>
+            <option data-score="2" value="Ja">Ja</option>
+          </select>
+        </div>
+        <div class="col-md-1 estimate">
+          <label class="form-label estimate-label" for="webshopLinksEstimate">Dagen</label>
+          <input class="form-control" id="webshopLinksEstimate" max="99" maxlength="2" min="0"
+            name="webshopLinksEstimate" type="number" />
+        </div>
+        <div class="col-md-5">
+          <label class="form-label" for="edi">EDI</label>
+          <select class="form-select" data-target="ediEstimate" id="edi" name="edi">
+            <option data-score="" value="null"></option>
+            <option data-score="0" value="NVT">NVT</option>
+            <option data-score="3" value="Ja">Ja</option>
+          </select>
+        </div>
+        <div class="col-md-1 estimate">
+          <label class="form-label estimate-label" for="ediEstimate">Dagen</label>
+          <input class="form-control" id="ediEstimate" max="99" maxlength="2" min="0" name="ediEstimate"
+            type="number" />
+        </div>
+        <div class="col-md-5">
+          <label class="form-label" for="extender">Extender</label>
+          <select class="form-select" data-target="extenderEstimate" id="extender" name="extender">
+            <option data-score="" value="null"></option>
+            <option data-score="0" value="NVT">NVT</option>
+            <option data-score="0" value="Ja">Ja</option>
+          </select>
+        </div>
+        <div class="col-md-1 estimate">
+          <label class="form-label estimate-label" for="extenderEstimate">Dagen</label>
+          <input class="form-control" id="extenderEstimate" max="99" maxlength="2" min="0" name="extenderEstimate"
+            type="number" />
+        </div>
+        <div class="col-md-5">
+          <label class="form-label" for="eslModified">Maatwerk lay-out (.ESL)</label>
+          <select class="form-select" data-target="eslModifiedEstimate" id="eslModified" name="eslModified">
+            <option data-score="" value="null"></option>
+            <option data-score="0" value="NVT">NVT</option>
+            <option data-score="1" value="Ja">Ja</option>
+          </select>
+        </div>
+        <div class="col-md-1 estimate">
+          <label class="form-label estimate-label" for="eslModifiedEstimate">Dagen</label>
+          <input class="form-control" id="eslModifiedEstimate" max="99" maxlength="2" min="0" name="eslModifiedEstimate"
+            type="number" />
+        </div>
+        <div class="col-md-5">
+          <label class="form-label" for="environmentType">Netwerkomgeving</label>
+          <select class="form-select" data-target="environmentTypeEstimate" id="environmentType" name="environmentType">
+            <option data-score="" value="null"></option>
+            <option data-score="0" value="TS">Terminal server (achtige omgeving)</option>
+            <option data-score="0" value="WPL">Losse werkplekken (of dergelijke)</option>
+            <option data-score="0" value="BMS">Cloud BMS</option>
+            <option data-score="0" value="CL3">Cloud Derden</option>
+            <option data-score="0" value="CLE">Cloud Exact</option>
+            <option data-score="0" value="CLA">Microsoft Azure</option>
+          </select>
+        </div>
+        <div class="col-md-1 estimate">
+          <label class="form-label estimate-label" for="environmentTypeEstimate">Dagen</label>
+          <input class="form-control" id="environmentTypeEstimate" max="99" maxlength="2" min="0"
+            name="environmentTypeEstimate" type="number" />
+        </div>
+        <div class="col-md-5">
+          <label class="form-label" for="userCount">Aantal werkplekken</label>
+          <select class="form-select" data-target="userCountEstimate" id="userCount" name="userCount">
+            <option data-score="" value="null"></option>
+            <option data-score="0" value="5">tot 5</option>
+            <option data-score="1" value="10">tot 10</option>
+            <option data-score="2" value="20">tot 20</option>
+            <option data-score="3" value="21">meer dan 20</option>
+          </select>
+        </div>
+        <div class="col-md-1 estimate">
+          <label class="form-label estimate-label" for="userCountEstimate">Dagen</label>
+          <input class="form-control" id="userCountEstimate" max="99" maxlength="2" min="0" name="userCountEstimate"
+            type="number" />
+        </div>
+        <div class="col-md-5">
+          <label class="form-label" for="environmentSetup">Testomgeving?</label>
+          <select class="form-select" data-target="environmentSetupEstimate" id="environmentSetup"
+            name="environmentSetup">
+            <option data-score="" value="null"></option>
+            <option data-score="0" value="NEE">NIET AANWEZIG</option>
+            <option data-score="0" value="SEP">Separate omgeving</option>
+            <option data-score="0" value="NEW">Nieuwe omgeving a.s.</option>
+            <option data-score="0" value="LOC">Lokale machine</option>
+          </select>
+        </div>
+        <div class="col-md-1 estimate">
+          <label class="form-label estimate-label" for="environmentSetupEstimate">Dagen</label>
+          <input class="form-control" id="environmentSetupEstimate" max="99" maxlength="2" min="0"
+            name="environmentSetupEstimate" type="number" />
+        </div>
+        <div class="col-md-5">
+          <label class="form-label" for="otherSoftware">Overige software</label>
+          <select class="form-select" data-target="otherSoftwareEstimate" id="otherSoftware" name="otherSoftware">
+            <option data-score="" value="null"></option>
+            <option data-score="0" value="NVT">NVT</option>
+            <option data-score="1" value="Overige software">Overige software zie opm.</option>
+          </select>
+        </div>
+        <div class="col-md-1 estimate">
+          <label class="form-label estimate-label" for="otherSoftwareEstimate">Dagen</label>
+          <input class="form-control" id="otherSoftwareEstimate" max="99" maxlength="2" min="0"
+            name="otherSoftwareEstimate" type="number" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label" for="largeTextFieldProducts">Opmerkingen:</label>
+          <textarea class="form-control" id="largeTextFieldProducts" name="largeTextFieldProducts" rows="6"></textarea>
+        </div>
+      </fieldset>
+
+      <!-- Services Section -->
+      <fieldset id="services" class="row justify-content-between row-gap-2 mb-4">
+        <legend>Calculatie</legend>
+        <hr>
+        <div class="col-md-6">
+          <p><b>Omschrijving</b></p>
+          <span>Migratie - Oplevering naar test</span>
+        </div>
+        <div class="col-md-2 text-end">
+          <label class="form-label" for="testMigration"><b>Dagen</b></label>
+          <input class="form-control text-end readonly-number" id="testMigration" min="1" max="99" maxlength="2"
+            name="testMigration" type="number" />
+        </div>
+        <div class="col-md-6 align-content-center">
+          <span>Begeleiding gedurende testfase</span>
+        </div>
+        <div class="col-md-2">
+          <input class="form-control text-end" id="functionalTesting" min="1" max="99" maxlength="2" name="functionalTesting"
+            type="number" />
+        </div>
+        <div class="col-md-6 align-content-center">
+          <span>Migratie - Oplevering naar productie</span>
+        </div>
+        <div class="col-md-2">
+          <input class="form-control text-end" id="liveMigration" min="1" max="99" maxlength="2" name="liveMigration"
+            type="number" />
+        </div>
+        <div class="col-md-6 align-content-center">
+          <span>Aanwezigheid bij livegang & nazorg</span>
+        </div>
+        <div class="col-md-2">
+          <input class="form-control text-end" id="goLiveCare" min="1" max="99" maxlength="2" name="goLiveCare" type="number" />
+        </div>
+        <div class="col-md-6 align-content-center">
+          <span>Projectmanagement</span>
+        </div>
+        <div class="col-md-2 align-content-center ms-auto text-end">
+          <span id="projectManagementAdvice" class="text-muted small">Advies: 0</span>
+        </div>
+        <div class="col-md-2">
+          <input class="form-control text-end" id="projectManagement" name="projectManagement" type="number" />
+        </div>
+        <hr>
+        <div class="col-md-6 align-content-center">
+          <span><b>Totaal</b></span>
+        </div>
+        <div class="col-md-2">
+          <input class="form-control readonly-number text-end" id="projectTotal" min="1" max="99" maxlength="2" name="projectTotal"
+            type="number" />
+        </div>
+      </fieldset>
+    </form>
+  </main>
+
+  <!-- jQuery and Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+    crossorigin="anonymous"></script>
+  <script src="js/script.js"></script>
+</body>
+
+</html>
