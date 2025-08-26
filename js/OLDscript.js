@@ -7,62 +7,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const emailInput = document.getElementById("emailAddress");
 
   // Load cached values
-
-  // Prefix for localStorage keys to avoid collisions
-  const storagePrefix = "intakeForm_";
-
-  // Restore cached values
   form.querySelectorAll("input, select, textarea").forEach(el => {
-    const key = storagePrefix + (el.name || el.id);
-    if (!key) return;
+    const name = el.name || el.id;
+    if (!name) return;
 
-    const cached = localStorage.getItem(key);
+    const cached = localStorage.getItem(name);
     if (cached !== null) {
-      switch (el.type) {
-        case "checkbox":
-          el.checked = cached === "true";
-          break;
-        case "radio":
-          if (el.value === cached) el.checked = true;
-          break;
-        case "number":
-          const parsed = parseFloat(cached);
-          el.value = !isNaN(parsed) ? parsed : '';
-          break;
-        default:
-          el.value = cached;
+      if (el.type === "checkbox") {
+        el.checked = cached === "true";
+      } else if (el.type === "radio") {
+        if (el.value === cached) el.checked = true;
+      } else if (el.type === "number") {
+        // Only set if it's a valid number
+        const parsed = parseFloat(cached);
+        el.value = !isNaN(parsed) ? parsed : '';
+      } else {
+        el.value = cached;
       }
     }
   });
-
-  // Save changes to localStorage
-  form.addEventListener("input", e => {
-    const el = e.target;
-    const key = storagePrefix + (el.name || el.id);
-    if (!key) return;
-
-    if (el.type === "checkbox") {
-      localStorage.setItem(key, el.checked);
-    } else if (el.type === "radio" && el.checked) {
-      localStorage.setItem(key, el.value);
-    } else {
-      localStorage.setItem(key, el.value);
-    }
-
-    updateTotals(); // Ensure totals are updated on input
-  });
-
-  // Restore special fields manually if needed
-  const restoreSpecialField = (id) => {
-    const el = document.getElementById(id);
-    if (el) {
-      const cached = localStorage.getItem(storagePrefix + id);
-      if (cached !== null) el.value = cached;
-    }
-  };
-
-  restoreSpecialField("testMigration");
-  restoreSpecialField("projectTotal");
 
   // Save changes and update totals
   form.addEventListener("input", e => {
@@ -80,62 +43,10 @@ document.addEventListener("DOMContentLoaded", () => {
     clearBtn.textContent = "Herstel";
     clearBtn.addEventListener("click", () => {
       if (!confirm("Are you sure you want to clear all form data?")) return;
-
-  // Prefix for localStorage keys to avoid collisions
-  const storagePrefix = "intakeForm_";
-
-  // Restore cached values
-  form.querySelectorAll("input, select, textarea").forEach(el => {
-    const key = storagePrefix + (el.name || el.id);
-    if (!key) return;
-
-    const cached = localStorage.getItem(key);
-    if (cached !== null) {
-      switch (el.type) {
-        case "checkbox":
-          el.checked = cached === "true";
-          break;
-        case "radio":
-          if (el.value === cached) el.checked = true;
-          break;
-        case "number":
-          const parsed = parseFloat(cached);
-          el.value = !isNaN(parsed) ? parsed : '';
-          break;
-        default:
-          el.value = cached;
-      }
-    }
-  });
-
-  // Save changes to localStorage
-  form.addEventListener("input", e => {
-    const el = e.target;
-    const key = storagePrefix + (el.name || el.id);
-    if (!key) return;
-
-    if (el.type === "checkbox") {
-      localStorage.setItem(key, el.checked);
-    } else if (el.type === "radio" && el.checked) {
-      localStorage.setItem(key, el.value);
-    } else {
-      localStorage.setItem(key, el.value);
-    }
-
-    updateTotals(); // Ensure totals are updated on input
-  });
-
-  // Restore special fields manually if needed
-  const restoreSpecialField = (id) => {
-    const el = document.getElementById(id);
-    if (el) {
-      const cached = localStorage.getItem(storagePrefix + id);
-      if (cached !== null) el.value = cached;
-    }
-  };
-
-  restoreSpecialField("testMigration");
-  restoreSpecialField("projectTotal");
+      form.querySelectorAll("input, select, textarea").forEach(el => {
+        const name = el.name || el.id;
+        if (name) localStorage.removeItem(name);
+      });
       localStorage.removeItem("migrationScore");
       localStorage.setItem("formJustCleared", "true");
       form.reset();
