@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("intakeForm");
   const clearBtn = document.getElementById("refreshBtn");
@@ -7,62 +8,39 @@ document.addEventListener("DOMContentLoaded", () => {
   const emailInput = document.getElementById("emailAddress");
 
   // Load cached values
-
-  // Prefix for localStorage keys to avoid collisions
-  const storagePrefix = "intakeForm_";
-
-  // Restore cached values
   form.querySelectorAll("input, select, textarea").forEach(el => {
-    const key = storagePrefix + (el.name || el.id);
-    if (!key) return;
+    const name = el.name || el.id;
+    if (!name) return;
 
-    const cached = localStorage.getItem(key);
+    const cached = localStorage.getItem(name);
     if (cached !== null) {
-      switch (el.type) {
-        case "checkbox":
-          el.checked = cached === "true";
-          break;
-        case "radio":
-          if (el.value === cached) el.checked = true;
-          break;
-        case "number":
-          const parsed = parseFloat(cached);
-          el.value = !isNaN(parsed) ? parsed : '';
-          break;
-        default:
-          el.value = cached;
+      if (el.type === "checkbox") {
+        el.checked = cached === "true";
+      } else if (el.type === "radio") {
+        if (el.value === cached) el.checked = true;
+      } else if (el.type === "number") {
+        const parsed = parseFloat(cached);
+        el.value = !isNaN(parsed) ? parsed : '';
+      } else {
+        el.value = cached;
       }
     }
   });
 
-  // Save changes to localStorage
-  form.addEventListener("input", e => {
-    const el = e.target;
-    const key = storagePrefix + (el.name || el.id);
-    if (!key) return;
-
-    if (el.type === "checkbox") {
-      localStorage.setItem(key, el.checked);
-    } else if (el.type === "radio" && el.checked) {
-      localStorage.setItem(key, el.value);
-    } else {
-      localStorage.setItem(key, el.value);
+  //Trigger change events for relevant selects after restoring values
+  ['sqlRelease', 'environmentSetup', 'bpaType'].forEach(id => {
+    const select = document.getElementById(id);
+    const savedValue = localStorage.getItem(id);
+    if (select && savedValue) {
+      select.value = savedValue;
+      // Trigger native change event
+      select.dispatchEvent(new Event('change'));
+      // Trigger jQuery change event if jQuery is available
+      if (typeof $ !== 'undefined') {
+        $('#' + id).trigger('change');
+      }
     }
-
-    updateTotals(); // Ensure totals are updated on input
   });
-
-  // Restore special fields manually if needed
-  const restoreSpecialField = (id) => {
-    const el = document.getElementById(id);
-    if (el) {
-      const cached = localStorage.getItem(storagePrefix + id);
-      if (cached !== null) el.value = cached;
-    }
-  };
-
-  restoreSpecialField("testMigration");
-  restoreSpecialField("projectTotal");
 
   // Save changes and update totals
   form.addEventListener("input", e => {
@@ -79,63 +57,11 @@ document.addEventListener("DOMContentLoaded", () => {
   if (clearBtn) {
     clearBtn.textContent = "Herstel";
     clearBtn.addEventListener("click", () => {
-      if (!confirm("Are you sure you want to clear all form data?")) return;
-
-  // Prefix for localStorage keys to avoid collisions
-  const storagePrefix = "intakeForm_";
-
-  // Restore cached values
-  form.querySelectorAll("input, select, textarea").forEach(el => {
-    const key = storagePrefix + (el.name || el.id);
-    if (!key) return;
-
-    const cached = localStorage.getItem(key);
-    if (cached !== null) {
-      switch (el.type) {
-        case "checkbox":
-          el.checked = cached === "true";
-          break;
-        case "radio":
-          if (el.value === cached) el.checked = true;
-          break;
-        case "number":
-          const parsed = parseFloat(cached);
-          el.value = !isNaN(parsed) ? parsed : '';
-          break;
-        default:
-          el.value = cached;
-      }
-    }
-  });
-
-  // Save changes to localStorage
-  form.addEventListener("input", e => {
-    const el = e.target;
-    const key = storagePrefix + (el.name || el.id);
-    if (!key) return;
-
-    if (el.type === "checkbox") {
-      localStorage.setItem(key, el.checked);
-    } else if (el.type === "radio" && el.checked) {
-      localStorage.setItem(key, el.value);
-    } else {
-      localStorage.setItem(key, el.value);
-    }
-
-    updateTotals(); // Ensure totals are updated on input
-  });
-
-  // Restore special fields manually if needed
-  const restoreSpecialField = (id) => {
-    const el = document.getElementById(id);
-    if (el) {
-      const cached = localStorage.getItem(storagePrefix + id);
-      if (cached !== null) el.value = cached;
-    }
-  };
-
-  restoreSpecialField("testMigration");
-  restoreSpecialField("projectTotal");
+      if (!confirm("Formuliergegevens wissen?")) return;
+      form.querySelectorAll("input, select, textarea").forEach(el => {
+        const name = el.name || el.id;
+        if (name) localStorage.removeItem(name);
+      });
       localStorage.removeItem("migrationScore");
       localStorage.setItem("formJustCleared", "true");
       form.reset();
@@ -162,18 +88,17 @@ document.addEventListener("DOMContentLoaded", () => {
           select.classList.remove("is-invalid");
         }
 
-        // Add listener to reset styling when a valid value is selected
         select.addEventListener("change", () => {
           const newValue = select.value;
           if (newValue && newValue !== "null") {
             select.classList.remove("is-invalid");
           }
-        }, { once: true }); // Only attach once per click
+        }, { once: true });
       });
 
       if (!allSelected) {
         e.preventDefault();
-        alert("Niet alle productselecties zijn ingevuld. Vul alle velden in voordat je print.");
+        alert("Vul alle velden!");
         return;
       }
 
@@ -191,25 +116,21 @@ document.addEventListener("DOMContentLoaded", () => {
       return sum;
     };
 
-    // Products → testMigration
     if (testMigrationInput) {
       const productsFieldset = document.querySelector("fieldset#products");
       testMigrationInput.value = sumFieldset(productsFieldset, ["projectTotal", "projectManagement"]);
       localStorage.setItem("migrationScore", testMigrationInput.value);
     }
 
-    // Services → projectTotal
     if (projectTotalInput) {
       const servicesFieldset = document.querySelector("fieldset#services");
 
-      // Advies berekenen zonder projectManagement
       const servicesForAdvice = sumFieldset(servicesFieldset, ["projectTotal", "projectManagement"]);
       const projectManagementAdviceDiv = document.getElementById("projectManagementAdvice");
       if (projectManagementAdviceDiv) {
         projectManagementAdviceDiv.textContent = `Advies: ${Math.ceil(servicesForAdvice * 0.2)}`;
       }
 
-      // Eindtotaal inclusief projectManagement
       const servicesTotal = sumFieldset(servicesFieldset, ["projectTotal"]);
       projectTotalInput.value = servicesTotal;
     }
@@ -256,28 +177,27 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Please enter a valid email address.");
         setTimeout(() => {
           emailInput.focus();
-        }, 0); // Delay focus to avoid triggering blur again immediately
+        }, 0);
       }
     });
   }
 
-
-  // Header hide/show on scroll
+  // Nav hide/show on scroll
   (() => {
     let lastScroll = 0;
-    const header = document.querySelector("header");
-    if (!header) return;
+    const nav = document.querySelector("nav");
+    if (!nav) return;
 
     window.addEventListener("scroll", () => {
       const currentScroll = window.pageYOffset;
       if (currentScroll <= 0) {
-        header.style.top = "0";
+        nav.style.top = "0";
         return;
       }
       if (currentScroll > lastScroll) {
-        header.style.top = `-${header.offsetHeight}px`;
+        nav.style.top = `-${nav.offsetHeight}px`;
       } else {
-        header.style.top = "0";
+        nav.style.top = "0";
       }
       lastScroll = currentScroll;
     });
@@ -286,32 +206,31 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initial calculation
   updateTotals();
 
+  $('#bpaType').on('change', function () {
+    const selectedValue = $(this).val();
+    const bpaWrapper = $('#bpaTaskWrapper');
 
-$('#bpaType').on('change', function () {
-  const selectedValue = $(this).val();
-  const bpaWrapper = $('#bpaTaskWrapper');
+    if (selectedValue === 'null' || selectedValue === 'NVT') {
+      bpaWrapper.fadeOut(200, function () {
+        bpaWrapper.addClass('invisible');
+      });
+    } else {
+      bpaWrapper.removeClass('invisible').hide().fadeIn(300);
+    }
+  });
 
-  if (selectedValue === 'null' || selectedValue === 'NVT') {
-    bpaWrapper.fadeOut(200, function () {
-      bpaWrapper.addClass('invisible');
-    });
-  } else {
-    bpaWrapper.removeClass('invisible').hide().fadeIn(300);
-  }
-});
+  $('#environmentType').on('change', function () {
+    const selectedValue = $(this).val();
+    const workstationWrapper = $('#workstationAmountWrapper');
 
-$('#environmentType').on('change', function () {
-  const selectedValue = $(this).val();
-  const workstationWrapper = $('#workstationAmountWrapper');
-
-  if (selectedValue === 'WPL') {
-    workstationWrapper.removeClass('invisible').hide().fadeIn(300);
-  } else {
-    workstationWrapper.fadeOut(200, function () {
-      workstationWrapper.addClass('invisible');
-    });
-  }
-});
+    if (selectedValue === 'WPL') {
+      workstationWrapper.removeClass('invisible').hide().fadeIn(300);
+    } else {
+      workstationWrapper.fadeOut(200, function () {
+        workstationWrapper.addClass('invisible');
+      });
+    }
+  });
 
   $('#environmentSetup').on('change', function () {
     const selectedValue = $(this).val();
@@ -338,4 +257,21 @@ $('#environmentType').on('change', function () {
       });
     }
   });
+
+  const alertSelects = [
+    { id: "sqlRelease", trigger: true },
+    { id: "environmentSetup", trigger: true },
+    { id: "bpaType", trigger: true },
+    { id: "environmentType", trigger: true }
+    // Voeg hier andere select-ID's toe die alerts tonen
+  ];
+
+  setTimeout(() => {
+    alertSelects.forEach(({ id }) => {
+      const savedValue = localStorage.getItem(id);
+      if (savedValue) {
+        $("#" + id).val(savedValue).trigger("change");
+      }
+    });
+  }, 100);
 });

@@ -18,6 +18,8 @@
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
   <!-- Font Awesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <!--load jQuery from Google CDN for fast loading-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <!-- Custom CSS -->
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -26,17 +28,19 @@
 
   <main class="container">
 
-    <header class="row sticky-top justify-content-between py-3">
+    <header class="row justify-content-between py-3">
       <div class="col-md-10">
-        <h1>Exact Globe+ Intake Form</h1>
+        <h1>Exact Globe+ Intake</h1>
       </div>
       <div class="col-md-2 d-flex justify-content-end align-items-center gap-2 d-print-none">
-        <button type="button" class="btn btn-secondary flex-grow-1" id="refreshBtn">Herstel</button>
-        <button type="button" class="btn btn-primary flex-grow-1" id="printBtn">Print</button>
+        <nav>
+          <button type="button" class="btn btn-secondary flex-grow-1" id="refreshBtn">Herstel</button>
+          <button type="button" class="btn btn-primary flex-grow-1" id="printBtn">Print</button>
+        </nav>
       </div>
     </header>
 
-    <form class="mt-5" id="intakeForm">
+    <form class="mt-5" id="intakeForm" autocapitalize="off">
 
       <!-- General Section -->
       <fieldset id="general" class="row justify-content-start row-gap-2 mb-4">
@@ -50,24 +54,27 @@
           <label for="companyName" class="form-label">Bedrijfsnaam</label>
           <input type="text" class="form-control" id="companyName" name="companyName">
         </div>
-        <div class="col-md-2">
-          <label for="Title" class="form-label">Titel</label>
-          <select class="form-select" id="Title" name="Title">
-            <option value="Dhr">De heer</option>
-            <option value="Mvr">Mevrouw</option>
-          </select>
-        </div>
-        <div class="col-md-2">
-          <label for="contactInitials" class="form-label">Initialen</label>
-          <input type="text" class="form-control" id="contactInitials" name="contactInitials">
-        </div>
-        <div class="col-md-2">
-          <label for="contactMiddleName" class="form-label">Tussenvoegsel</label>
-          <input type="text" class="form-control" id="contactMiddleName" name="contactMiddleName">
-        </div>
-        <div class="col-md-6">
-          <label for="contactLastName" class="form-label">Achternaam</label>
-          <input type="text" class="form-control" id="contactLastName" name="contactLastName">
+        <div class="row row-wrapper justify-content-between">
+          <div class="col-md-2">
+            <label for="Title" class="form-label">Titel</label>
+            <select class="form-select" id="Title" name="Title">
+              <option value="null"></option>
+              <option value="Dhr">De heer</option>
+              <option value="Mvr">Mevrouw</option>
+            </select>
+          </div>
+          <div class="col-md-1">
+            <label for="contactInitials" class="form-label">Initialen</label>
+            <input type="text" class="form-control" id="contactInitials" name="contactInitials">
+          </div>
+          <div class="col-md-2">
+            <label for="contactMiddleName" class="form-label">Tussenvoegsel</label>
+            <input type="text" class="form-control" id="contactMiddleName" name="contactMiddleName">
+          </div>
+          <div class="col-md-6">
+            <label for="contactLastName" class="form-label">Achternaam</label>
+            <input type="text" class="form-control" id="contactLastName" name="contactLastName">
+          </div>
         </div>
         <div class="col-md-6">
           <label for="emailAddress" class="form-label">Email Address</label>
@@ -133,7 +140,7 @@
           <label class="form-label" for="erp">ERP</label>
           <select class="form-select" data-target="erpEstimate" id="erp" name="erp">
             <option data-score="" value="null"></option>
-            <option data-score="" value="NVT">NVT</option>
+            <option data-score="0" value="NVT">NVT</option>
             <option data-score="1" value="EBF">Exact Business software for Finance</option>
             <option data-score="1" value="EBW">Exact Business software for Wholesale</option>
             <option data-score="1" value="EBM">Exact Business software for Manufacturing</option>
@@ -152,7 +159,7 @@
           <label class="form-label" for="globeRelease">Globe Release</label>
           <select class="form-select" data-target="globeReleaseEstimate" id="globeRelease" name="globeRelease">
             <option data-score="" value="null"></option>
-            <option data-score="" value="NVT">NVT</option>
+            <option data-score="0" value="NVT">NVT</option>
             <option data-score="1" value="418 of ouder">418 of ouder</option>
             <option data-score="1" value="419">419</option>
             <option data-score="1" value="420">420</option>
@@ -171,7 +178,7 @@
           <label class="form-label" for="synergyRelease">Synergy Release</label>
           <select class="form-select" data-target="synergyReleaseEstimate" id="synergyRelease" name="synergyRelease">
             <option data-score="" value="null"></option>
-            <option data-score="" value="NVT">NVT</option>
+            <option data-score="0" value="NVT">NVT</option>
             <option data-score="0" value="263 of ouder">263 of ouder</option>
             <option data-score="0" value="264">264</option>
             <option data-score="0" value="265">265</option>
@@ -193,6 +200,7 @@
         <div class="col-md-5">
           <label class="form-label" for="OSRelease">Windows Server versie</label>
           <select class="form-select" data-target="OSReleaseEstimate" id="OSRelease" name="OSRelease">
+            <option data-score="" value="null"></option>
             <option data-score="0" value="2012">2012/R2</option>
             <option data-score="0" value="2016">2016</option>
             <option data-score="0" value="2019">2019</option>
@@ -224,9 +232,9 @@
           <input class="form-control" id="sqlReleaseEstimate" max="99" maxlength="2" min="0" name="sqlReleaseEstimate"
             type="number" />
         </div>
-        <div id="sqlAlertWrapper" class="row row-wrapper d-none">
-          <div class="col-12 alert alert-warning" role="alert">
-            <span><b>- Let op! Voor de migratie naar Exact Globe+ is een upgrade naar SQL Server 2019/2022 vereist! -</b></span>
+        <div id="sqlAlertWrapper" class="row row-wrapper d-none justify-content-center">
+          <div class="col-md-12 alert alert-warning" role="alert">
+            <span><b>- Voor de migratie naar Exact Globe+ is een upgrade naar SQL Server 2019/2022 vereist! -</b></span>
           </div>
         </div>
         <div class="row row-wrapper"> 
@@ -234,7 +242,7 @@
             <label class="form-label" for="bpaType">BPA Type</label>
             <select class="form-select" data-target="bpaTypeEstimate" id="bpaType" name="bpaType">
               <option data-score="" value="null"></option>
-              <option data-score="" value="NVT">NVT</option>
+              <option data-score="0" value="NVT">NVT</option>
               <option data-score="0" value="Orbis">Orbis</option>
               <option data-score="0" value="EEM">Exact Event Manager</option>
               <option data-score="0" value="GLM">GLM</option>
@@ -253,7 +261,7 @@
               <div class="col-md-10">
                 <label class="form-label" for="taskQuantity">Aantal Exact Globe Integration taken</label>
                 <select class="form-select" data-target="bpaTaskEstimate" id="taskQuantity" name="taskQuantity">
-                  <option data-score="" value="null"></option>
+                  <option data-score="" value="null" selected>Geen</option>
                   <option data-score="1" value="10">Tot 10</option>
                   <option data-score="2" value="25">11 tot 25</option>
                   <option data-score="4" value="50">26 tot 50</option>
@@ -272,7 +280,7 @@
           <label class="form-label" for="wmsSolution">WMS</label>
           <select class="form-select" data-target="wmsSolutionEstimate" id="wmsSolution" name="wmsSolution">
             <option data-score="" value="null"></option>
-            <option data-score="" value="NVT">NVT</option>
+            <option data-score="0" value="NVT">NVT</option>
             <option data-score="1" value="Exact WMS">Exact WMS</option>
             <option data-score="1" value="Boxwise">Boxwise</option>
             <option data-score="1" value="Bizbloqs">Bizbloqs</option>
@@ -289,7 +297,7 @@
           <label class="form-label" for="useExcelAddin">Gebruikt u Excel add-in?</label>
           <select class="form-select" data-target="useExcelAddinEstimate" id="useExcelAddin" name="useExcelAddin">
             <option data-score="" value="null"></option>
-            <option data-score="" value="NVT">NVT</option>
+            <option data-score="0" value="NVT">NVT</option>
             <option data-score="1" value="Ja">Ja</option>
           </select>
         </div>
@@ -302,7 +310,7 @@
           <label class="form-label" for="hrmSolution">Payroll</label>
           <select class="form-select" data-target="hrmSolutionEstimate" id="hrmSolution" name="hrmSolution">
             <option data-score="" value="null"></option>
-            <option data-score="" value="NVT">NVT</option>
+            <option data-score="0" value="NVT">NVT</option>
             <option data-score="0" value="Payroll">Payroll</option>
           </select>
         </div>
@@ -391,7 +399,7 @@
           <select class="form-select" data-target="customizationTypeEstimate" id="customizationType"
             name="customizationType">
             <option data-score="" value="null"></option>
-            <option data-score="" value="NVT">NVT</option>
+            <option data-score="0" value="NVT">NVT</option>
             <option data-score="1" value="Maatwerk BrainSys">Maatwerk BrainSys</option>
             <option data-score="1" value="Maatwerk CLEAR Solutions">Maatwerk CLEAR Solutions</option>
             <option data-score="1" value="Maatwerk Exact">Maatwerk Exact</option>
@@ -417,7 +425,20 @@
           <input class="form-control" id="extenderEstimate" max="99" maxlength="2" min="0" name="extenderEstimate"
             type="number" />
         </div>
-          <div class="col-md-5">
+        <div class="col-md-5">
+          <label class="form-label" for="eslModified">Maatwerk lay-out (.ESL)</label>
+          <select class="form-select" data-target="eslModifiedEstimate" id="eslModified" name="eslModified">
+            <option data-score="" value="null"></option>
+            <option data-score="0" value="NVT">NVT</option>
+            <option data-score="1" value="Ja">Ja</option>
+          </select>
+        </div>
+        <div class="col-md-1 estimate">
+          <label class="form-label estimate-label" for="eslModifiedEstimate">Dagen</label>
+          <input class="form-control" id="eslModifiedEstimate" max="99" maxlength="2" min="0" name="eslModifiedEstimate"
+            type="number" />
+        </div>
+        <div class="col-md-5">
           <label class="form-label" for="eslModified">Aantal Lay-outs</label>
           <select class="form-select" data-target="layoutQuantityEstimate" id="layoutQuantity" name="layoutQuantity">
             <option data-score="" value="null"></option>
@@ -430,19 +451,6 @@
         <div class="col-md-1 estimate">
           <label class="form-label estimate-label" for="layoutQuantityEstimate">Dagen</label>
           <input class="form-control" id="layoutQuantityEstimate" max="99" maxlength="2" min="0" name="layoutQuantityEstimate"
-            type="number" />
-        </div>
-        <div class="col-md-5">
-          <label class="form-label" for="eslModified">Maatwerk lay-out (.ESL)</label>
-          <select class="form-select" data-target="eslModifiedEstimate" id="eslModified" name="eslModified">
-            <option data-score="" value="null"></option>
-            <option data-score="0" value="NVT">NVT</option>
-            <option data-score="1" value="Ja">Ja</option>
-          </select>
-        </div>
-        <div class="col-md-1 estimate">
-          <label class="form-label estimate-label" for="eslModifiedEstimate">Dagen</label>
-          <input class="form-control" id="eslModifiedEstimate" max="99" maxlength="2" min="0" name="eslModifiedEstimate"
             type="number" />
         </div>
         <div class="row row-wrapper">
@@ -468,7 +476,7 @@
               <div class="col-md-10">
                 <label class="form-label" for="userCount">Aantal werkstations (desktop of laptop)</label>
                 <select class="form-select" data-target="userCountEstimate" id="userCount" name="userCount">
-                  <option data-score="" value="null"></option>
+                  <option data-score="0" value="null" selected>NVT</option>
                   <option data-score="0" value="5">tot 5</option>
                   <option data-score="1" value="10">tot 10</option>
                   <option data-score="2" value="20">tot 20</option>
@@ -483,20 +491,15 @@
             </div>
           </div>
         </div>
-        <div id="testAlertWrapper" class="row row-wrapper d-none">
-          <div class="col-12 alert alert-danger" role="alert">
-            <span><b>- Let op! Voor de migratie naar Exact Globe+ is een separate testomgeving vereist! -</b></span>
-          </div>
-        </div>
         <div class="col-md-5">
           <label class="form-label" for="environmentSetup">Testomgeving?</label>
           <select class="form-select" data-target="environmentSetupEstimate" id="environmentSetup"
             name="environmentSetup">
             <option data-score="" value="null"></option>
             <option data-score="0" value="NEE">NIET AANWEZIG</option> <!--testAlertWrapper trigger-->
+            <option data-score="0" value="LOC">Lokale machine</option>
             <option data-score="0" value="SEP">Separate omgeving</option>
             <option data-score="0" value="NEW">Nieuwe omgeving a.s.</option>
-            <option data-score="0" value="LOC">Lokale machine</option>
           </select>
         </div>
         <div class="col-md-1 estimate">
@@ -516,6 +519,11 @@
           <label class="form-label estimate-label" for="otherSoftwareEstimate">Dagen</label>
           <input class="form-control" id="otherSoftwareEstimate" max="99" maxlength="2" min="0"
             name="otherSoftwareEstimate" type="number" />
+        </div>
+        <div id="testAlertWrapper" class="row row-wrapper d-none justify-content-center">
+          <div class="col-md-12 alert alert-danger" role="alert">
+            <span><b>- Voor de migratie naar Exact Globe+ is een separate testomgeving vereist! -</b></span>
+          </div>
         </div>
         <div class="col-md-6">
           <label class="form-label" for="largeTextFieldProducts">Opmerkingen:</label>
@@ -577,8 +585,7 @@
     </form>
   </main>
 
-  <!-- jQuery and Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!--Bootstrap JS & Custom JS-->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
     crossorigin="anonymous"></script>
