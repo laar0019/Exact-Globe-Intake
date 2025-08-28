@@ -4,10 +4,17 @@
 <head>
   <meta charset="UTF-8">
 
+  <!--Favicon links to own website-->
   <link rel="apple-touch-icon" sizes="180x180" href="/favi/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favi/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favi/favicon-16x16.png">
   <link rel="manifest" href="/favi/site.webmanifest">
+
+    <!--Favicon links for GITHUB-page-->
+  <link rel="apple-touch-icon" sizes="180x180" href="/Exact-Globe-Intake/blob//favi/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/Exact-Globe-Intake/blob//favi/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/Exact-Globe-Intake/blob//favi/favicon-16x16.png">
+  <link rel="manifest" href="/Exact-Globe-Intake/blob//favi/site.webmanifest">
 
   <title>Exact Globe+ Intake</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,7 +47,7 @@
       </div>
     </header>
 
-    <form class="mt-5" id="intakeForm" autocapitalize="off">
+    <form class="mt-5" id="intakeForm" autocomplete="off">
 
       <!-- General Section -->
       <fieldset id="general" class="row justify-content-start row-gap-2 mb-4">
@@ -126,9 +133,9 @@
           <label for="implementationDate" class="form-label">Aanvangsdatum migratieproject</label>
           <input type="date" class="form-control" id="implementationDate" name="implementationDate">
         </div>
-        <div class="col-md-6">
+        <div class="col-md-12">
           <label for="largeTextFieldPlanning" class="form-label">Opmerkingen:</label>
-          <textarea class="form-control" id="largeTextFieldPlanning" name="largeTextFieldPlanning" rows="6"></textarea>
+          <textarea class="form-control" id="largeTextFieldPlanning" name="largeTextFieldPlanning" rows="5"></textarea>
         </div>
       </fieldset>
 
@@ -261,7 +268,8 @@
               <div class="col-md-10">
                 <label class="form-label" for="taskQuantity">Aantal Exact Globe Integration taken</label>
                 <select class="form-select" data-target="bpaTaskEstimate" id="taskQuantity" name="taskQuantity">
-                  <option data-score="" value="null" selected>Geen</option>
+                  <option data-score="" value="null"></option>
+                  <option data-score="0" value="NVT" selected></option>
                   <option data-score="1" value="10">Tot 10</option>
                   <option data-score="2" value="25">11 tot 25</option>
                   <option data-score="4" value="50">26 tot 50</option>
@@ -476,7 +484,8 @@
               <div class="col-md-10">
                 <label class="form-label" for="userCount">Aantal werkstations (desktop of laptop)</label>
                 <select class="form-select" data-target="userCountEstimate" id="userCount" name="userCount">
-                  <option data-score="0" value="null" selected>NVT</option>
+                  <option data-score="" value="null"></option>
+                  <option data-score="0" value="NVT" selected>NVT</option>
                   <option data-score="0" value="5">tot 5</option>
                   <option data-score="1" value="10">tot 10</option>
                   <option data-score="2" value="20">tot 20</option>
@@ -525,7 +534,7 @@
             <span><b>- Voor de migratie naar Exact Globe+ is een separate testomgeving vereist! -</b></span>
           </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-12">
           <label class="form-label" for="largeTextFieldProducts">Opmerkingen:</label>
           <textarea class="form-control" id="largeTextFieldProducts" name="largeTextFieldProducts" rows="5"></textarea>
         </div>

@@ -249,7 +249,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const selectedValue = $(this).val();
     const alertWrapper = $('#sqlAlertWrapper');
 
-    if (selectedValue !== '2019' && selectedValue !== '2022' && selectedValue !== 'null') {
+    if (selectedValue !== '2019' && selectedValue !== '2022' && selectedValue !== 'null' && selectedValue !== '') {
       alertWrapper.removeClass('d-none').hide().fadeIn(500);
     } else {
       alertWrapper.fadeOut(400, function () {
