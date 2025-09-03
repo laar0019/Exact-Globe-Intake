@@ -212,10 +212,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (selectedValue === 'null' || selectedValue === 'NVT') {
       bpaWrapper.fadeOut(200, function () {
-        bpaWrapper.addClass('invisible');
+        bpaWrapper.addClass('d-none');
       });
     } else {
-      bpaWrapper.removeClass('invisible').hide().fadeIn(300);
+      bpaWrapper.removeClass('d-none').hide().fadeIn(300);
     }
   });
 
@@ -224,10 +224,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const workstationWrapper = $('#workstationAmountWrapper');
 
     if (selectedValue === 'WPL') {
-      workstationWrapper.removeClass('invisible').hide().fadeIn(300);
+      workstationWrapper.removeClass('d-none').hide().fadeIn(300);
     } else {
       workstationWrapper.fadeOut(200, function () {
-        workstationWrapper.addClass('invisible');
+        workstationWrapper.addClass('d-none');
       });
     }
   });
@@ -274,4 +274,61 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }, 100);
+  
+  jQuery(function ($) {
+    const $toggle   = $('#logoToggle');        // clickable container
+    const $csLogo   = $('#csLogo');
+    const $bsLogo   = $('#bsLogo');
+    const $csFooter = $('#csFooter');
+    const $bsFooter = $('#bsFooter');
+
+    function showBrand(brand) {
+      const isCS = brand === 'cs';
+
+      // Toggle logos
+      $csLogo.toggleClass('d-none', !isCS);
+      $bsLogo.toggleClass('d-none', isCS);
+
+      // Toggle footers (if present)
+      if ($csFooter.length) $csFooter.toggleClass('d-none', !isCS);
+      if ($bsFooter.length) $bsFooter.toggleClass('d-none', isCS);
+
+      // Helpful state for debugging / a11y
+      $toggle.attr({
+        'aria-pressed': String(!isCS),     // pressed means BrainSys shown
+        'data-brand': isCS ? 'cs' : 'bs'
+      });
+    }
+
+    // Initial sync based on current DOM state
+    const isCSVisible = !$csLogo.hasClass('d-none');
+    showBrand(isCSVisible ? 'cs' : 'bs');
+
+    // Toggle on click
+    $toggle.on('click', function () {
+      const isCSNow = !$csLogo.hasClass('d-none');
+      showBrand(isCSNow ? 'bs' : 'cs');
+    });
+
+    // Optional: make the div keyboard/click accessible like a button
+    $toggle.attr({ role: 'button', tabindex: 0, 'aria-label': 'Wissel merk' });
+    $toggle.on('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        $toggle.click();
+      }
+    });
+  });
+
+  // Function to auto-resize all textareas based on content
+  function autoResizeTextareas() {
+    document.querySelectorAll('textarea').forEach(textarea => {
+      textarea.style.height = 'auto'; // Reset height
+      textarea.style.height = textarea.scrollHeight + 'px'; // Set to content height
+    });
+  }
+
+  // Attach the resize function to the beforeprint event
+  window.addEventListener('beforeprint', autoResizeTextareas);
+
 });
