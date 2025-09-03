@@ -10,7 +10,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favi/favicon-16x16.png">
   <link rel="manifest" href="/favi/site.webmanifest">
 
-  <title>Exact Globe+ Intake</title>
+  <title>Exact Globe+ Intake v1.01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -494,22 +494,6 @@
             name="layoutQuantityEstimate" type="number" />
         </div>
         <div class="col-md-5 col-print-5">
-          <label class="form-label" for="environmentSetup">Testomgeving?</label>
-          <select class="form-select" data-target="environmentSetupEstimate" id="environmentSetup"
-            name="environmentSetup">
-            <option data-score="" value="null"></option>
-            <option data-score="0" value="NEE">NIET AANWEZIG</option> <!--testAlertWrapper trigger-->
-            <option data-score="0" value="LOC">Lokale machine</option>
-            <option data-score="0" value="SEP">Separate omgeving</option>
-            <option data-score="0" value="NEW">Nieuwe omgeving a.s.</option>
-          </select>
-        </div>
-        <div class="col-md-1 col-print-1 estimate">
-          <label class="form-label estimate-label" for="environmentSetupEstimate">Dagen</label>
-          <input class="form-control" id="environmentSetupEstimate" max="99" maxlength="2" min="0"
-            name="environmentSetupEstimate" type="number" />
-        </div>
-        <div class="col-md-5 col-print-5">
           <label class="form-label" for="environmentType">Netwerkomgeving</label>
           <select class="form-select" data-target="environmentTypeEstimate" id="environmentType"
             name="environmentType">
@@ -546,6 +530,22 @@
                 name="userCountEstimate" type="number" />
             </div>
           </div>
+        </div>
+        <div class="col-md-5 col-print-5">
+          <label class="form-label" for="environmentSetup">Testomgeving?</label>
+          <select class="form-select" data-target="environmentSetupEstimate" id="environmentSetup"
+            name="environmentSetup">
+            <option data-score="" value="null"></option>
+            <option data-score="0" value="NEE">NIET AANWEZIG</option> <!--testAlertWrapper trigger-->
+            <option data-score="0" value="LOC">Lokale machine</option>
+            <option data-score="0" value="SEP">Separate omgeving</option>
+            <option data-score="0" value="NEW">Nieuwe omgeving a.s.</option>
+          </select>
+        </div>
+        <div class="col-md-1 col-print-1 estimate">
+          <label class="form-label estimate-label" for="environmentSetupEstimate">Dagen</label>
+          <input class="form-control" id="environmentSetupEstimate" max="99" maxlength="2" min="0"
+            name="environmentSetupEstimate" type="number" />
         </div>
         <div class="col-md-5 col-print-5">
           <label class="form-label" for="otherSoftware">Overige software</label>
