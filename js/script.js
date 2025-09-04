@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("intakeForm");
   const clearBtn = document.getElementById("refreshBtn");
   const printBtn = document.getElementById("printBtn");
+  const pdfBtn = document.getElementById("pdfBtn");
   const testMigrationInput = document.getElementById("testMigration");
   const projectTotalInput = document.getElementById("projectTotal");
   const emailInput = document.getElementById("emailAddress");
@@ -134,6 +135,59 @@ document.addEventListener("DOMContentLoaded", () => {
       const servicesTotal = sumFieldset(servicesFieldset, ["projectTotal"]);
       projectTotalInput.value = servicesTotal;
     }
+  }
+
+  // Download PDF for Apple devices
+  if (pdfBtn) {
+      pdfBtn.addEventListener("click", function () {
+          const element = document.getElementById("formContainer");
+          console.log("PDF button clicked");
+
+          if (!element) {
+              console.error("Form container not found.");
+              return;
+          }
+
+          // Remove problematic background images from live DOM
+          element.querySelectorAll("*").forEach(el => {
+              const bg = window.getComputedStyle(el).backgroundImage;
+              if (bg && bg !== "none") {
+                  //console.log("Background image found:", bg, el);
+                  el.style.backgroundImage = "none";
+              }
+          });
+
+          // Hide <img> tags temporarily
+          const hiddenImages = [];
+          element.querySelectorAll("img").forEach(img => {
+              hiddenImages.push({ el: img, originalDisplay: img.style.display });
+              img.style.display = "none";
+          });
+
+          const options = {
+              margin:       0.5,
+              filename:     'Exact Globe+ intake.pdf',
+              image:        { type: 'jpeg', quality: 0.98 },
+              html2canvas:  {
+                  scale: 2,
+                  logging: true,
+                  backgroundColor: "#ffffff"
+              },
+              jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+          };
+
+          html2pdf().set(options).from(element).save().then(() => {
+              // Restore images
+              hiddenImages.forEach(({ el, originalDisplay }) => {
+                  el.style.display = originalDisplay;
+              });
+          }).catch((err) => {
+              console.error("PDF generation failed:", err);
+              hiddenImages.forEach(({ el, originalDisplay }) => {
+                  el.style.display = originalDisplay;
+              });
+          });
+      });
   }
 
   // Attach listeners to fieldsets
@@ -274,11 +328,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }, 100);
-  
+
   jQuery(function ($) {
-    const $toggle   = $('#logoToggle');        // clickable container
-    const $csLogo   = $('#csLogo');
-    const $bsLogo   = $('#bsLogo');
+    const $toggle = $('#logoToggle');        // clickable container
+    const $csLogo = $('#csLogo');
+    const $bsLogo = $('#bsLogo');
     const $csFooter = $('#csFooter');
     const $bsFooter = $('#bsFooter');
 

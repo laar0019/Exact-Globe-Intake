@@ -71,6 +71,16 @@ nav {
   transition: opacity 0.3s ease-in-out;
 }
 
+.pdf-export {
+  background: white !important;
+  color: black !important;
+  overflow: visible !important;
+}
+
+fieldset, footer {
+    page-break-inside: avoid;
+}
+
 @media print {
 
         body {
@@ -93,7 +103,7 @@ nav {
         page-break-inside: avoid;
     }
 
-    fieldset {
+    fieldset, footer {
         page-break-inside: avoid;
     }
 
