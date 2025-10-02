@@ -10,7 +10,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favi/favicon-16x16.png">
   <link rel="manifest" href="/favi/site.webmanifest">
 
-  <title>Exact Globe+ Intake v1.02</title>
+  <title>Exact Globe+ Intake v1.03</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -24,7 +24,7 @@
   <!--Load html2PDF js bundle-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/mvdl_custom_style.css">
 </head>
 
 <body class="container-fluid">
@@ -47,10 +47,12 @@
         </div>
       </div>
       <nav class="d-flex flex-column">
-        <button type="button" class="btn btn-danger mb-2" id="logoToggle">Kies logo</button>
-        <button type="button" class="btn btn-secondary mb-2" id="refreshBtn">Herstel</button>
-        <button type="button" class="btn btn-primary mb-2" id="printBtn">Print</button>
-        <button type="button" class="btn btn-success d-none" id="pdfBtn">PDF</button>
+        <button type="button" class="btn btn-outline-primary mb-2" id="logoToggle">Select logo</button>
+        <button type="button" class="btn btn-outline-danger mb-2" id="refreshBtn">Herstel</button>
+        <button type="button" class="btn btn-outline-success mb-2" id="loadBtn">Openen</button>
+        <button type="button" class="btn btn-outline-success mb-2" id="saveBtn">Opslaan</button>
+        <button type="button" class="btn btn-outline-secondary" id="printBtn">Print</button>
+        
         <!-- Toggle CS/Brainsys toevoegen voor logo & footer -->
       </nav>
     </header>

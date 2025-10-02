@@ -385,4 +385,86 @@ document.addEventListener("DOMContentLoaded", () => {
   // Attach the resize function to the beforeprint event
   window.addEventListener('beforeprint', autoResizeTextareas);
 
+  // === EXPORTEREN: Opslaan als JSON-bestand ===
+document.getElementById('saveBtn').addEventListener('click', function () {
+    const form = document.getElementById('intakeForm');
+    const data = {};
+    form.querySelectorAll('input, select, textarea').forEach(el => {
+        const name = el.name || el.id;
+        if (!name) return;
+        if (el.type === 'checkbox') {
+            data[name] = el.checked;
+        } else if (el.type === 'radio') {
+            if (el.checked) data[name] = el.value;
+        } else {
+            data[name] = el.value;
+        }
+    });
+    // Download als JSON
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'intake-formulier.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+});
+
+// === IMPORTEREN: Openen en automatisch invullen ===
+document.getElementById('loadBtn').addEventListener('click', function () {
+    // Maak een verborgen file input aan
+    let fileInput = document.getElementById('jsonImportInput');
+    if (!fileInput) {
+        fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.id = 'jsonImportInput';
+        fileInput.accept = '.json';
+        fileInput.style.display = 'none';
+        document.body.appendChild(fileInput);
+    }
+    fileInput.click();
+
+    fileInput.onchange = function (event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                const form = document.getElementById('intakeForm');
+                form.querySelectorAll('input, select, textarea').forEach(el => {
+                    const name = el.name || el.id;
+                    if (!name || !(name in data)) return;
+                    if (el.type === 'checkbox') {
+                        el.checked = data[name] === true || data[name] === 'true';
+                    } else if (el.type === 'radio') {
+                        el.checked = el.value === data[name];
+                    } else {
+                        el.value = data[name];
+                    }
+                    // Sla ook direct op in localStorage
+                    if (el.type === 'checkbox') localStorage.setItem(name, el.checked);
+                    else if (el.type === 'radio' && el.checked) localStorage.setItem(name, el.value);
+                    else localStorage.setItem(name, el.value);
+                });
+                // Eventueel: trigger change events voor relevante selects
+                ['sqlRelease', 'environmentSetup', 'bpaType'].forEach(id => {
+                    const select = document.getElementById(id);
+                    if (select && (id in data)) {
+                        select.value = data[id];
+                        select.dispatchEvent(new Event('change'));
+                        if (typeof $ !== 'undefined') {
+                            $('#' + id).trigger('change');
+                        }
+                    }
+                });
+                alert('Formulierdata succesvol geladen!');
+            } catch (err) {
+                alert('Ongeldig JSON-bestand.');
+            }
+        };
+        reader.readAsText(file);
+    };
+});
+
 });
