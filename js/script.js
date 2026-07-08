@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const sumFieldset = (fieldset, exclude = []) => {
       let sum = 0;
       if (fieldset) fieldset.querySelectorAll("input[type=number]").forEach(input => {
-        if (!exclude.includes(input.id)) sum += parseInt(input.value) || 0;
+        if (!exclude.includes(input.id)) sum += parseFloat(input.value) || 0;
       });
       return sum;
     };
@@ -128,8 +128,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const servicesForAdvice = sumFieldset(servicesFieldset, ["projectTotal", "projectManagement"]);
       const projectManagementAdviceDiv = document.getElementById("projectManagementAdvice");
+
       if (projectManagementAdviceDiv) {
-        projectManagementAdviceDiv.textContent = `Advies: ${Math.ceil(servicesForAdvice * 0.2)}`;
+        const advice = Math.round((servicesForAdvice * 0.1) * 2) / 2;
+        projectManagementAdviceDiv.textContent = `Advies: ${advice.toFixed(1)}`;
       }
 
       const servicesTotal = sumFieldset(servicesFieldset, ["projectTotal"]);
@@ -139,55 +141,55 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Download PDF for Apple devices
   if (pdfBtn) {
-      pdfBtn.addEventListener("click", function () {
-          const element = document.getElementById("formContainer");
-          console.log("PDF button clicked");
+    pdfBtn.addEventListener("click", function () {
+      const element = document.getElementById("formContainer");
+      console.log("PDF button clicked");
 
-          if (!element) {
-              console.error("Form container not found.");
-              return;
-          }
+      if (!element) {
+        console.error("Form container not found.");
+        return;
+      }
 
-          // Remove problematic background images from live DOM
-          element.querySelectorAll("*").forEach(el => {
-              const bg = window.getComputedStyle(el).backgroundImage;
-              if (bg && bg !== "none") {
-                  //console.log("Background image found:", bg, el);
-                  el.style.backgroundImage = "none";
-              }
-          });
-
-          // Hide <img> tags temporarily
-          const hiddenImages = [];
-          element.querySelectorAll("img").forEach(img => {
-              hiddenImages.push({ el: img, originalDisplay: img.style.display });
-              img.style.display = "none";
-          });
-
-          const options = {
-              margin:       0.5,
-              filename:     'Exact Globe+ intake.pdf',
-              image:        { type: 'jpeg', quality: 0.98 },
-              html2canvas:  {
-                  scale: 2,
-                  logging: true,
-                  backgroundColor: "#ffffff"
-              },
-              jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-          };
-
-          html2pdf().set(options).from(element).save().then(() => {
-              // Restore images
-              hiddenImages.forEach(({ el, originalDisplay }) => {
-                  el.style.display = originalDisplay;
-              });
-          }).catch((err) => {
-              console.error("PDF generation failed:", err);
-              hiddenImages.forEach(({ el, originalDisplay }) => {
-                  el.style.display = originalDisplay;
-              });
-          });
+      // Remove problematic background images from live DOM
+      element.querySelectorAll("*").forEach(el => {
+        const bg = window.getComputedStyle(el).backgroundImage;
+        if (bg && bg !== "none") {
+          //console.log("Background image found:", bg, el);
+          el.style.backgroundImage = "none";
+        }
       });
+
+      // Hide <img> tags temporarily
+      const hiddenImages = [];
+      element.querySelectorAll("img").forEach(img => {
+        hiddenImages.push({ el: img, originalDisplay: img.style.display });
+        img.style.display = "none";
+      });
+
+      const options = {
+        margin: 0.5,
+        filename: 'Exact Globe+ intake.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: {
+          scale: 2,
+          logging: true,
+          backgroundColor: "#ffffff"
+        },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+
+      html2pdf().set(options).from(element).save().then(() => {
+        // Restore images
+        hiddenImages.forEach(({ el, originalDisplay }) => {
+          el.style.display = originalDisplay;
+        });
+      }).catch((err) => {
+        console.error("PDF generation failed:", err);
+        hiddenImages.forEach(({ el, originalDisplay }) => {
+          el.style.display = originalDisplay;
+        });
+      });
+    });
   }
 
   // Attach listeners to fieldsets
@@ -386,19 +388,19 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener('beforeprint', autoResizeTextareas);
 
   // === EXPORTEREN: Opslaan als JSON-bestand ===
-document.getElementById('saveBtn').addEventListener('click', function () {
+  document.getElementById('saveBtn').addEventListener('click', function () {
     const form = document.getElementById('intakeForm');
     const data = {};
     form.querySelectorAll('input, select, textarea').forEach(el => {
-        const name = el.name || el.id;
-        if (!name) return;
-        if (el.type === 'checkbox') {
-            data[name] = el.checked;
-        } else if (el.type === 'radio') {
-            if (el.checked) data[name] = el.value;
-        } else {
-            data[name] = el.value;
-        }
+      const name = el.name || el.id;
+      if (!name) return;
+      if (el.type === 'checkbox') {
+        data[name] = el.checked;
+      } else if (el.type === 'radio') {
+        if (el.checked) data[name] = el.value;
+      } else {
+        data[name] = el.value;
+      }
     });
     // Download als JSON
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -408,63 +410,72 @@ document.getElementById('saveBtn').addEventListener('click', function () {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-});
+  });
 
-// === IMPORTEREN: Openen en automatisch invullen ===
-document.getElementById('loadBtn').addEventListener('click', function () {
+  // === IMPORTEREN: Openen en automatisch invullen ===
+  document.getElementById('loadBtn').addEventListener('click', function () {
     // Maak een verborgen file input aan
     let fileInput = document.getElementById('jsonImportInput');
     if (!fileInput) {
-        fileInput = document.createElement('input');
-        fileInput.type = 'file';
-        fileInput.id = 'jsonImportInput';
-        fileInput.accept = '.json';
-        fileInput.style.display = 'none';
-        document.body.appendChild(fileInput);
+      fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.id = 'jsonImportInput';
+      fileInput.accept = '.json';
+      fileInput.style.display = 'none';
+      document.body.appendChild(fileInput);
     }
     fileInput.click();
 
     fileInput.onchange = function (event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            try {
-                const data = JSON.parse(e.target.result);
-                const form = document.getElementById('intakeForm');
-                form.querySelectorAll('input, select, textarea').forEach(el => {
-                    const name = el.name || el.id;
-                    if (!name || !(name in data)) return;
-                    if (el.type === 'checkbox') {
-                        el.checked = data[name] === true || data[name] === 'true';
-                    } else if (el.type === 'radio') {
-                        el.checked = el.value === data[name];
-                    } else {
-                        el.value = data[name];
-                    }
-                    // Sla ook direct op in localStorage
-                    if (el.type === 'checkbox') localStorage.setItem(name, el.checked);
-                    else if (el.type === 'radio' && el.checked) localStorage.setItem(name, el.value);
-                    else localStorage.setItem(name, el.value);
-                });
-                // Eventueel: trigger change events voor relevante selects
-                ['sqlRelease', 'environmentSetup', 'bpaType'].forEach(id => {
-                    const select = document.getElementById(id);
-                    if (select && (id in data)) {
-                        select.value = data[id];
-                        select.dispatchEvent(new Event('change'));
-                        if (typeof $ !== 'undefined') {
-                            $('#' + id).trigger('change');
-                        }
-                    }
-                });
-                alert('Formulierdata succesvol geladen!');
-            } catch (err) {
-                alert('Ongeldig JSON-bestand.');
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          const form = document.getElementById('intakeForm');
+          form.querySelectorAll('input, select, textarea').forEach(el => {
+            const name = el.name || el.id;
+            if (!name || !(name in data)) return;
+            if (el.type === 'checkbox') {
+              el.checked = data[name] === true || data[name] === 'true';
+            } else if (el.type === 'radio') {
+              el.checked = el.value === data[name];
+            } else {
+              el.value = data[name];
             }
-        };
-        reader.readAsText(file);
+            // Sla ook direct op in localStorage
+            if (el.type === 'checkbox') localStorage.setItem(name, el.checked);
+            else if (el.type === 'radio' && el.checked) localStorage.setItem(name, el.value);
+            else localStorage.setItem(name, el.value);
+          });
+          // Eventueel: trigger change events voor relevante selects
+          ['sqlRelease', 'environmentSetup', 'bpaType'].forEach(id => {
+            const select = document.getElementById(id);
+            if (select && (id in data)) {
+              select.value = data[id];
+              select.dispatchEvent(new Event('change'));
+              if (typeof $ !== 'undefined') {
+                $('#' + id).trigger('change');
+              }
+            }
+          });
+          alert('Formulierdata succesvol geladen!');
+        } catch (err) {
+          alert('Ongeldig JSON-bestand.');
+        }
+      };
+      reader.readAsText(file);
     };
-});
+  });
+
+  flatpickr.localize(flatpickr.l10ns.nl);
+
+  flatpickr(".datepicker", {
+      dateFormat: "d-m-Y",
+      allowInput: true,
+      weekNumbers: true,
+      disableMobile: true
+  });
 
 });
