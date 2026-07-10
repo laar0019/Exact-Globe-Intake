@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
+    "use strict";
+
     const form = document.getElementById("intakeForm");
     if (!form) return;
 
@@ -11,8 +13,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const projectTotalInput = document.getElementById("projectTotal");
     const emailInput = document.getElementById("emailAddress");
 
-    const formFieldsSelector = "input, select, textarea";
-    const conditionalSelectIds = [
+    const FORM_FIELDS = "input, select, textarea";
+
+    const conditionalFields = [
         "sqlRelease",
         "environmentSetup",
         "environmentType",
@@ -21,6 +24,10 @@ document.addEventListener("DOMContentLoaded", () => {
     ];
 
     // === Helpers ===
+    function $(id) {
+        return document.getElementById(id);
+    }
+
     function getFieldName(el) {
         return el.name || el.id || "";
     }
@@ -32,7 +39,12 @@ document.addEventListener("DOMContentLoaded", () => {
         return value;
     }
 
-    function toStoredValue(el) {
+    function setVisible(el, visible) {
+        if (!el) return;
+        el.classList.toggle("d-none", !visible);
+    }
+
+    function getStoredValue(el) {
         if (el.type === "checkbox") return String(el.checked);
         return el.value;
     }
@@ -46,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        localStorage.setItem(name, toStoredValue(el));
+        localStorage.setItem(name, getStoredValue(el));
     }
 
     function setFieldValue(el, rawValue) {
@@ -71,85 +83,48 @@ document.addEventListener("DOMContentLoaded", () => {
         el.value = value;
     }
 
-    function triggerChange(el) {
-        if (!el) return;
-        el.dispatchEvent(new Event("change", { bubbles: true }));
-
-        if (typeof window.jQuery !== "undefined") {
-            window.jQuery(el).trigger("change");
-        }
+    function getAllFormFields() {
+        return Array.from(form.querySelectorAll(FORM_FIELDS));
     }
 
-    function showWrapper(wrapperId, show, fadeInMs = 500, fadeOutMs = 400) {
-        const el = document.getElementById(wrapperId);
-        if (!el) return;
+    // === Conditional alerts and dynamic sections ===
+    // Bewust centraal gemaakt: niet afhankelijk van jQuery .trigger('change').
+    // Daardoor werkt dit betrouwbaar bij handmatige invoer, localStorage, JSON-import en GitHub Pages.
+    function updateConditionalAlerts() {
+        const environmentSetup = $("environmentSetup");
+        setVisible($("testAlertWrapper"), environmentSetup?.value === "Nee");
 
-        if (typeof window.jQuery !== "undefined") {
-            const $el = window.jQuery(el);
-            if (show) {
-                $el.removeClass("d-none").hide().fadeIn(fadeInMs);
-            } else {
-                $el.fadeOut(fadeOutMs, function () {
-                    $el.addClass("d-none");
-                });
-            }
-            return;
-        }
+        const migrationWithCLEAR = $("migrationWithCLEAR");
+        setVisible($("migrationAlertWrapper"), migrationWithCLEAR?.value === "Nee");
 
-        el.classList.toggle("d-none", !show);
+        const sqlRelease = $("sqlRelease");
+        const sqlValue = sqlRelease?.value || "";
+        const showSqlAlert = Boolean(
+            sqlValue &&
+            sqlValue !== "null" &&
+            sqlValue !== "2019" &&
+            sqlValue !== "2022"
+        );
+        setVisible($("sqlAlertWrapper"), showSqlAlert);
+
+        const bpaType = $("bpaType");
+        const bpaValue = bpaType?.value || "";
+        setVisible($("bpaTaskWrapper"), Boolean(bpaValue && bpaValue !== "null" && bpaValue !== "NVT"));
+
+        const environmentType = $("environmentType");
+        setVisible($("workstationAmountWrapper"), environmentType?.value === "WPL");
     }
 
-    function triggerConditionalSelects() {
-        conditionalSelectIds.forEach(id => {
-            const select = document.getElementById(id);
-            if (select) triggerChange(select);
+    function initConditionalFieldListeners() {
+        conditionalFields.forEach(id => {
+            const el = $(id);
+            if (el) el.addEventListener("change", updateConditionalAlerts);
         });
     }
 
-    // === Dynamic UI handlers ===
-    function initConditionalUiHandlers() {
-        const bpaType = document.getElementById("bpaType");
-        if (bpaType) {
-            bpaType.addEventListener("change", () => {
-                const selectedValue = bpaType.value;
-                showWrapper("bpaTaskWrapper", selectedValue !== "null" && selectedValue !== "NVT", 300, 200);
-            });
-        }
-
-        const environmentType = document.getElementById("environmentType");
-        if (environmentType) {
-            environmentType.addEventListener("change", () => {
-                showWrapper("workstationAmountWrapper", environmentType.value === "WPL", 300, 200);
-            });
-        }
-
-        const environmentSetup = document.getElementById("environmentSetup");
-        if (environmentSetup) {
-            environmentSetup.addEventListener("change", () => {
-                showWrapper("testAlertWrapper", environmentSetup.value === "Nee", 500, 400);
-            });
-        }
-
-        const sqlRelease = document.getElementById("sqlRelease");
-        if (sqlRelease) {
-            sqlRelease.addEventListener("change", () => {
-                const value = sqlRelease.value;
-                const showAlert = value !== "2019" && value !== "2022" && value !== "null" && value !== "";
-                showWrapper("sqlAlertWrapper", showAlert, 500, 400);
-            });
-        }
-
-        const migrationWithCLEAR = document.getElementById("migrationWithCLEAR");
-        if (migrationWithCLEAR) {
-            migrationWithCLEAR.addEventListener("change", () => {
-                showWrapper("migrationAlertWrapper", migrationWithCLEAR.value === "Nee", 500, 400);
-            });
-        }
-    }
-
-    // === Load from localStorage ===
+    // === LocalStorage ===
     function loadCachedValues() {
-        form.querySelectorAll(formFieldsSelector).forEach(el => {
+        getAllFormFields().forEach(el => {
             const name = getFieldName(el);
             if (!name) return;
 
@@ -159,35 +134,30 @@ document.addEventListener("DOMContentLoaded", () => {
             setFieldValue(el, cached);
         });
 
-        triggerConditionalSelects();
         updateTotals();
+        updateConditionalAlerts();
     }
 
-    // === Save on changes ===
-    function handleFormChange(e) {
+    function handleFormInput(e) {
         const el = e.target;
-        if (!el.matches(formFieldsSelector)) return;
+        if (!el.matches(FORM_FIELDS)) return;
 
         saveField(el);
         updateTotals();
+        updateConditionalAlerts();
     }
 
-    form.addEventListener("input", handleFormChange);
-    form.addEventListener("change", handleFormChange);
+    form.addEventListener("input", handleFormInput);
+    form.addEventListener("change", handleFormInput);
 
-    // === Product/service totals ===
+    // === Totals ===
     function sumFieldset(fieldset, exclude = []) {
-        let sum = 0;
+        if (!fieldset) return 0;
 
-        if (!fieldset) return sum;
-
-        fieldset.querySelectorAll("input[type=number]").forEach(input => {
-            if (!exclude.includes(input.id)) {
-                sum += parseFloat(input.value) || 0;
-            }
-        });
-
-        return sum;
+        return Array.from(fieldset.querySelectorAll("input[type=number]")).reduce((sum, input) => {
+            if (exclude.includes(input.id)) return sum;
+            return sum + (parseFloat(input.value) || 0);
+        }, 0);
     }
 
     function updateTotals() {
@@ -195,26 +165,53 @@ document.addEventListener("DOMContentLoaded", () => {
         const servicesFieldset = document.querySelector("fieldset#services");
 
         if (testMigrationInput) {
-            testMigrationInput.value = sumFieldset(productsFieldset, ["projectTotal", "projectManagement"]);
-            localStorage.setItem("migrationScore", testMigrationInput.value);
-            localStorage.setItem(getFieldName(testMigrationInput), testMigrationInput.value);
+            const migrationScore = sumFieldset(productsFieldset, ["projectTotal", "projectManagement"]);
+            testMigrationInput.value = migrationScore;
+            localStorage.setItem("migrationScore", String(migrationScore));
+
+            const fieldName = getFieldName(testMigrationInput);
+            if (fieldName) localStorage.setItem(fieldName, String(migrationScore));
         }
 
         if (projectTotalInput) {
             const servicesForAdvice = sumFieldset(servicesFieldset, ["projectTotal", "projectManagement"]);
-            const projectManagementAdviceDiv = document.getElementById("projectManagementAdvice");
+            const advice = Math.round((servicesForAdvice * 0.1) * 2) / 2;
+            const projectManagementAdviceDiv = $("projectManagementAdvice");
 
             if (projectManagementAdviceDiv) {
-                const advice = Math.round((servicesForAdvice * 0.1) * 2) / 2;
                 projectManagementAdviceDiv.textContent = `Advies: ${advice.toFixed(1)}`;
             }
 
-            projectTotalInput.value = sumFieldset(servicesFieldset, ["projectTotal"]);
-            localStorage.setItem(getFieldName(projectTotalInput), projectTotalInput.value);
+            const projectTotal = sumFieldset(servicesFieldset, ["projectTotal"]);
+            projectTotalInput.value = projectTotal;
+
+            const fieldName = getFieldName(projectTotalInput);
+            if (fieldName) localStorage.setItem(fieldName, String(projectTotal));
         }
     }
 
-    function initFieldsetListeners() {
+    function initScoreSelects() {
+        const productsFieldset = document.querySelector("fieldset#products");
+        if (!productsFieldset) return;
+
+        productsFieldset.querySelectorAll("select[data-target]").forEach(select => {
+            select.addEventListener("change", () => {
+                const targetId = select.dataset.target;
+                const targetInput = targetId ? $(targetId) : null;
+                const selectedOption = select.options[select.selectedIndex];
+                const score = parseInt(selectedOption?.dataset.score, 10);
+
+                if (targetInput) {
+                    targetInput.value = !Number.isNaN(score) ? score : "";
+                    localStorage.setItem(targetId, targetInput.value);
+                }
+
+                updateTotals();
+            });
+        });
+    }
+
+    function initTotalInputListeners() {
         ["products", "services"].forEach(id => {
             const fieldset = document.querySelector(`fieldset#${id}`);
             if (!fieldset) return;
@@ -223,24 +220,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (id === "services" && input.id === "projectTotal") return;
                 input.addEventListener("input", updateTotals);
             });
-
-            if (id !== "products") return;
-
-            fieldset.querySelectorAll("select").forEach(select => {
-                select.addEventListener("change", () => {
-                    const targetId = select.getAttribute("data-target");
-                    const selectedOption = select.options[select.selectedIndex];
-                    const score = parseInt(selectedOption?.getAttribute("data-score"), 10);
-                    const targetInput = targetId ? document.getElementById(targetId) : null;
-
-                    if (targetInput) {
-                        targetInput.value = !Number.isNaN(score) ? score : "";
-                        localStorage.setItem(targetId, targetInput.value);
-                    }
-
-                    updateTotals();
-                });
-            });
         });
     }
 
@@ -248,7 +227,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function clearForm() {
         if (!confirm("Formuliergegevens wissen?")) return;
 
-        form.querySelectorAll(formFieldsSelector).forEach(el => {
+        getAllFormFields().forEach(el => {
             const name = getFieldName(el);
             if (name) localStorage.removeItem(name);
         });
@@ -264,10 +243,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (testMigrationInput) testMigrationInput.value = "";
         if (projectTotalInput) projectTotalInput.value = "";
 
-        const projectManagementAdviceDiv = document.getElementById("projectManagementAdvice");
+        const projectManagementAdviceDiv = $("projectManagementAdvice");
         if (projectManagementAdviceDiv) projectManagementAdviceDiv.textContent = "Advies: 0";
 
-        triggerConditionalSelects();
+        updateTotals();
+        updateConditionalAlerts();
     }
 
     if (clearBtn) {
@@ -276,21 +256,35 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // === Print ===
+    function autoResizeTextareas() {
+        document.querySelectorAll("textarea").forEach(textarea => {
+            textarea.style.height = "auto";
+            textarea.style.height = `${textarea.scrollHeight}px`;
+        });
+    }
+
     function validateProductsBeforePrint() {
         let allSelected = true;
 
         document.querySelectorAll("#products select").forEach(select => {
-            const isValid = select.value && select.value !== "null";
+            const isValid = Boolean(select.value && select.value !== "null");
             select.classList.toggle("is-invalid", !isValid);
-
             if (!isValid) allSelected = false;
         });
 
         return allSelected;
     }
 
+    window.addEventListener("beforeprint", () => {
+        updateConditionalAlerts();
+        autoResizeTextareas();
+    });
+
     if (printBtn) {
         printBtn.addEventListener("click", e => {
+            updateConditionalAlerts();
+            autoResizeTextareas();
+
             if (!validateProductsBeforePrint()) {
                 e.preventDefault();
                 alert("Vul alle velden!");
@@ -304,11 +298,14 @@ document.addEventListener("DOMContentLoaded", () => {
     // === PDF for Apple devices ===
     if (pdfBtn) {
         pdfBtn.addEventListener("click", () => {
-            const element = document.getElementById("formContainer");
+            const element = $("formContainer");
             if (!element) {
                 console.error("Form container not found.");
                 return;
             }
+
+            updateConditionalAlerts();
+            autoResizeTextareas();
 
             const changedBackgrounds = [];
             element.querySelectorAll("*").forEach(el => {
@@ -335,19 +332,25 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             };
 
+            if (typeof window.html2pdf === "undefined") {
+                console.error("html2pdf is not loaded.");
+                restorePdfChanges();
+                return;
+            }
+
             const options = {
                 margin: 0.5,
                 filename: "Exact Globe+ intake.pdf",
                 image: { type: "jpeg", quality: 0.98 },
                 html2canvas: {
                     scale: 2,
-                    logging: true,
+                    logging: false,
                     backgroundColor: "#ffffff"
                 },
                 jsPDF: { unit: "in", format: "letter", orientation: "portrait" }
             };
 
-            html2pdf()
+            window.html2pdf()
                 .set(options)
                 .from(element)
                 .save()
@@ -374,9 +377,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // === Nav hide/show on scroll ===
     function initNavScroll() {
-        let lastScroll = 0;
         const nav = document.querySelector("nav");
         if (!nav) return;
+
+        let lastScroll = 0;
 
         window.addEventListener("scroll", () => {
             const currentScroll = window.pageYOffset;
@@ -394,66 +398,51 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // === Brand/logo toggle ===
     function initBrandToggle() {
-        if (typeof window.jQuery === "undefined") return;
+        const toggle = $("logoToggle");
+        const csLogo = $("csLogo");
+        const bsLogo = $("bsLogo");
+        const csFooter = $("csFooter");
+        const bsFooter = $("bsFooter");
 
-        window.jQuery(function ($) {
-            const $toggle = $("#logoToggle");
-            const $csLogo = $("#csLogo");
-            const $bsLogo = $("#bsLogo");
-            const $csFooter = $("#csFooter");
-            const $bsFooter = $("#bsFooter");
+        if (!toggle || !csLogo || !bsLogo) return;
 
-            if (!$toggle.length) return;
+        function showBrand(brand) {
+            const isCS = brand === "cs";
 
-            function showBrand(brand) {
-                const isCS = brand === "cs";
+            csLogo.classList.toggle("d-none", !isCS);
+            bsLogo.classList.toggle("d-none", isCS);
+            csFooter?.classList.toggle("d-none", !isCS);
+            bsFooter?.classList.toggle("d-none", isCS);
 
-                $csLogo.toggleClass("d-none", !isCS);
-                $bsLogo.toggleClass("d-none", isCS);
+            toggle.setAttribute("aria-pressed", String(!isCS));
+            toggle.setAttribute("data-brand", isCS ? "cs" : "bs");
+        }
 
-                if ($csFooter.length) $csFooter.toggleClass("d-none", !isCS);
-                if ($bsFooter.length) $bsFooter.toggleClass("d-none", isCS);
+        showBrand(!csLogo.classList.contains("d-none") ? "cs" : "bs");
 
-                $toggle.attr({
-                    "aria-pressed": String(!isCS),
-                    "data-brand": isCS ? "cs" : "bs"
-                });
+        toggle.setAttribute("role", "button");
+        toggle.setAttribute("tabindex", "0");
+        toggle.setAttribute("aria-label", "Wissel merk");
+
+        toggle.addEventListener("click", () => {
+            const isCSNow = !csLogo.classList.contains("d-none");
+            showBrand(isCSNow ? "bs" : "cs");
+        });
+
+        toggle.addEventListener("keydown", e => {
+            if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                toggle.click();
             }
-
-            showBrand(!$csLogo.hasClass("d-none") ? "cs" : "bs");
-
-            $toggle.attr({ role: "button", tabindex: 0, "aria-label": "Wissel merk" });
-
-            $toggle.on("click", () => {
-                const isCSNow = !$csLogo.hasClass("d-none");
-                showBrand(isCSNow ? "bs" : "cs");
-            });
-
-            $toggle.on("keydown", e => {
-                if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    $toggle.click();
-                }
-            });
         });
     }
-
-    // === Textarea resize before printing ===
-    function autoResizeTextareas() {
-        document.querySelectorAll("textarea").forEach(textarea => {
-            textarea.style.height = "auto";
-            textarea.style.height = `${textarea.scrollHeight}px`;
-        });
-    }
-
-    window.addEventListener("beforeprint", autoResizeTextareas);
 
     // === Export JSON ===
     if (saveBtn) {
         saveBtn.addEventListener("click", () => {
             const data = {};
 
-            form.querySelectorAll(formFieldsSelector).forEach(el => {
+            getAllFormFields().forEach(el => {
                 const name = getFieldName(el);
                 if (!name) return;
 
@@ -472,20 +461,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
             const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
 
-            link.href = URL.createObjectURL(blob);
+            link.href = url;
             link.download = "intake-formulier.json";
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            URL.revokeObjectURL(link.href);
+            URL.revokeObjectURL(url);
         });
     }
 
     // === Import JSON ===
     if (loadBtn) {
         loadBtn.addEventListener("click", () => {
-            let fileInput = document.getElementById("jsonImportInput");
+            let fileInput = $("jsonImportInput");
 
             if (!fileInput) {
                 fileInput = document.createElement("input");
@@ -496,6 +486,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.body.appendChild(fileInput);
             }
 
+            // Nodig om hetzelfde bestand twee keer achter elkaar te kunnen importeren.
             fileInput.value = "";
             fileInput.click();
 
@@ -509,7 +500,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     try {
                         const data = JSON.parse(e.target.result);
 
-                        form.querySelectorAll(formFieldsSelector).forEach(el => {
+                        getAllFormFields().forEach(el => {
                             const name = getFieldName(el);
                             if (!name || !(name in data)) return;
 
@@ -517,10 +508,9 @@ document.addEventListener("DOMContentLoaded", () => {
                             saveField(el);
                         });
 
-                        // Belangrijk: na import alle afhankelijke change-listeners opnieuw uitvoeren.
-                        // Hierdoor verschijnen o.a. de SQL-, test-, BPA- en migrationWithCLEAR-alerts direct goed.
-                        triggerConditionalSelects();
                         updateTotals();
+                        updateConditionalAlerts();
+                        autoResizeTextareas();
 
                         alert("Formulierdata succesvol geladen!");
                     } catch (err) {
@@ -548,11 +538,13 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // === Init order matters ===
-    initConditionalUiHandlers();
-    initFieldsetListeners();
+    // === Init ===
+    initConditionalFieldListeners();
+    initTotalInputListeners();
+    initScoreSelects();
     initNavScroll();
     initBrandToggle();
     loadCachedValues();
     updateTotals();
+    updateConditionalAlerts();
 });
