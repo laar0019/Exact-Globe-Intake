@@ -204,12 +204,6 @@
             <input class="form-control invisible" id="sqlReleaseEstimate" max="99" maxlength="1" min="0" step="0.5" name="sqlReleaseEstimate"
               type="number" />
           </div>
-          <div id="sqlAlertWrapper" class="row wrapper d-none justify-content-center">
-            <div class="col-md-12 alert alert-warning" role="alert">
-              <span><b>- Voor de migratie naar Exact Globe+ is een upgrade naar SQL Server 2019/2022 vereist!
-                  -</b></span>
-            </div>
-          </div>
           <div class="col-md-5 col-print-5">
             <label class="form-label" for="bpaType">Welke BPA of RPA software gebruikt u?</label>
             <select class="form-select" data-target="bpaTypeEstimate" id="bpaType" name="bpaType">
@@ -487,7 +481,7 @@
             <select class="form-select" data-target="environmentSetupEstimate" id="environmentSetup"
               name="environmentSetup">
               <option data-score="" value="null"></option>
-              <option data-score="0" value="NEE">Geen omgeving beschikbaar</option> <!--testAlertWrapper trigger-->
+              <option data-score="0" value="Nee">Geen omgeving beschikbaar</option> <!--testAlertWrapper trigger-->
               <option data-score="0" value="LOC">Op lokale werkplek(ken)</option>
               <option data-score="0" value="SEP">In een permanente gescheiden testomgeving</option>
               <option data-score="0" value="NEW">I.c.m. een migratie naar een nieuwe netwerkomgeving</option>
@@ -497,11 +491,6 @@
             <label class="form-label estimate-label" for="environmentSetupEstimate">Dagen</label>
             <input class="form-control invisible" id="environmentSetupEstimate" max="99" maxlength="1" min="0" step="0.5"
               name="environmentSetupEstimate" type="number" />
-          </div>
-          <div id="testAlertWrapper" class="row wrapper d-none justify-content-center">
-            <div class="col-md-12 alert alert-danger" role="alert">
-              <span><b>- Het vooraf testen van de nieuwe software is een verplichte stap binnen onze best practice! -</b></span>
-            </div>
           </div>
           <div class="col-md-5 col-print-5">
             <label class="form-label" for="erp">Wat is uw voorkeur voor aanschaf van een teslicentie?</label>
@@ -530,7 +519,17 @@
             <input class="form-control" id="otherSoftwareEstimate" max="99" maxlength="1" min="0" step="0.5"
               name="otherSoftwareEstimate" type="number" />
           </div>
-
+          <div id="sqlAlertWrapper" class="row wrapper d-none justify-content-center">
+            <div class="col-md-12 alert alert-warning" role="alert">
+              <span><b>- Voor de migratie naar Exact Globe+ is een upgrade naar SQL Server 2019 vereist wordt 2025 aanbevolen! <a href="https://www.exactsoftware.com/docs/DocView.aspx?DocumentID=%7Bb0499827-7da8-40b1-8214-d076f1aaf2f1%7D" target="_blank">Bekijk hier de systeemeisen</a>
+                  -</b></span>
+            </div>
+          </div>
+          <div id="testAlertWrapper" class="row wrapper d-none justify-content-center">
+            <div class="col-md-12 alert alert-danger" role="alert">
+              <span><b>- Het vooraf testen van de nieuwe omgeving is een verplichte stap binnen de door CLEAR Solutions geadviseerde best practice voor migratieprojecten. -</b></span>
+            </div>
+          </div>
           <div class="col-md-12">
             <label class="form-label" for="largeTextFieldProducts">Opmerkingen:</label>
             <textarea class="form-control" id="largeTextFieldProducts" name="largeTextFieldProducts"></textarea>
@@ -635,16 +634,20 @@
             <input type="number" class="form-control" id="daysCount" name="daysCount" min="1">
           </div>
           <div class="col-sm-6">
-            <div class="form-check mt-2">
-              <input type="checkbox" class="form-check-input" id="migrationConfirmed" name="migrationConfirmed">
-              <label class="form-check-label" for="migrationConfirmed">Gaat u overstappen?</label>
-            </div>
+            <label for="migrationConfirmed" class="form-check-label">Wilt u de migratie naar Exact Globe+ met ons starten?</label>
+            <select class="form-select" id="migrationConfirmed" name="migrationConfirmed">
+              <option value=""></option>
+              <option value="Ja">Ja</option>
+              <option value="Nee">Nee</option>
+            </select>
           </div>
           <div class="col-sm-6">
-            <div class="form-check mt-2">
-              <input type="checkbox" class="form-check-input" id="migrationWithCLEAR" name="migrationWithCLEAR">
-              <label class="form-check-label" for="migrationWithCLEAR">Start u een migratietraject met ons?</label>
-            </div>
+            <label for="migrationWithCLEAR" class="form-check-label">Gaat u akkoord met onze 'best practice' voor migratieprojecten?</label>
+            <select class="form-select" id="migrationWithCLEAR" name="migrationWithCLEAR">
+              <option value=""></option>
+              <option value="Ja">Ja</option>
+              <option value="Nee">Nee</option>
+            </select>
           </div>
           <div class="col-sm-6">
               <label for="goLiveDate" class="form-label">Streefdatum 'Go live'</label>
@@ -668,7 +671,14 @@
             <label for="largeTextFieldPlanning" class="form-label">Opmerkingen:</label>
             <textarea class="form-control" id="largeTextFieldPlanning" name="largeTextFieldPlanning"></textarea>
           </div>
-          <!--Alert altijd weergeven: Inzake verplichte aanschaf testlicenties. Alvorens uw migratie te kunnen plannen, dienen de testlicentie te zijn besteld.-->
+          <div id="migrationAlertWrapper" class="row wrapper d-none justify-content-center">
+            <div class="col-md-12 alert alert-warning" role="alert">
+              <span><b>U kiest ervoor af te wijken van de door CLEAR Solutions geadviseerde migratieaanpak. 
+                Hierdoor neemt het risico op onontdekte fouten, verstoringen tijdens de livegang en aanvullende werkzaamheden toe. 
+                Eventuele nazorg of herstelwerkzaamheden kunnen niet altijd direct worden ingepland, aangezien onze consultancycapaciteit mogelijk reeds is ingepland voor andere klanten. -</b>
+              </span>
+            </div>
+          </div>
         </fieldset>
       </form>
     </main>

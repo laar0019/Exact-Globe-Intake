@@ -74,7 +74,7 @@ nav {
 }
 
 textarea.form-control {
-    height: 130px;
+    min-height: 130px;
 }
 
 .pdf-export {
@@ -107,7 +107,8 @@ textarea.form-control {
     }
 
     textarea.form-control {
-        min-height: min-content;
+        min-height: fit-content;
+        overflow: visible;
         border: none !important;
         font-size: inherit !important;
         box-shadow: none !important;
@@ -128,11 +129,11 @@ textarea.form-control {
         font-size: calc(1.375rem + 1.5vw);
     }*/
 
-    /*div,
-    fieldset,
+    div,
+    #services,
     footer {
         page-break-inside: avoid;
-    }*/
+    }
 
     .container {
         min-width: 100%;
@@ -157,6 +158,30 @@ textarea.form-control {
         display: none !important;
         -webkit-appearance: none !important;
         margin: 0 !important;
+    }
+
+    .alert-success {
+        background-color: #d1e7dd !important;
+        border-left: 2px solid #0f5132 !important;
+        color: #0f5132 !important;
+    }
+
+    .alert-warning {
+        background-color: #fff3cd !important;
+        border-left: 2px solid #664d03 !important;
+        color: #664d03 !important;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da !important;
+        border-left: 2px solid #842029 !important;
+        color: #842029 !important;
+    }
+
+    .alert {
+        max-width: 96%;
+        print-color-adjust: exact !important;
+        -webkit-print-color-adjust: exact !important;
     }
 
     .col-print-1 {
